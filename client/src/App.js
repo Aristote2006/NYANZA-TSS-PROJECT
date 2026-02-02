@@ -13,26 +13,37 @@ import Contact from './pages/Contact';
 import Leaders from './pages/Leaders';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
+import AdminLayout from './components/admin/AdminLayout';
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        <div style={{ paddingTop: '60px' }}>
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/programs" element={<Programs />} />
-            <Route path="/news" element={<News />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/leaders" element={<Leaders />} />
-            <Route path="/admin-login" element={<AdminLogin />} />
-            <Route path="/admin-dashboard/*" element={<AdminDashboard />} />
-          </Routes>
-          <Footer />
-        </div>
+        <Routes>
+          {/* Admin Routes - No Navbar/Footer */}
+          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route path="/admin-dashboard" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            {/* Add other admin sub-routes here if needed */}
+          </Route>
+          
+          {/* Public Routes - With Navbar/Footer */}
+          <Route path="*" element={
+            <div style={{ paddingTop: '60px' }}>
+              <Navbar />
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/programs" element={<Programs />} />
+                <Route path="/news" element={<News />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/leaders" element={<Leaders />} />
+              </Routes>
+              <Footer />
+            </div>
+          } />
+        </Routes>
       </Router>
     </ThemeProvider>
   );

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Container, Typography, Box, TextField, Button, Alert, Paper, Avatar } from '@mui/material';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import LockIcon from '@mui/icons-material/Lock';
 
 const AdminLogin = () => {
@@ -10,6 +10,7 @@ const AdminLogin = () => {
     password: ''
   });
   const [loginStatus, setLoginStatus] = useState(null); // null, 'loading', 'success', 'error'
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -36,7 +37,7 @@ const AdminLogin = () => {
         
         // Redirect to dashboard after a delay (in a real app, you'd save the token and redirect)
         setTimeout(() => {
-          window.location.href = '/admin-dashboard';
+          navigate('/admin-dashboard');
         }, 1500);
       } else {
         setLoginStatus('error');
