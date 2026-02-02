@@ -1,35 +1,33 @@
 import React from 'react';
-import { Container, Grid, Typography, Card, CardContent, CardMedia, Button, Box, Avatar } from '@mui/material';
+import { Container, Grid, Typography, Card, CardContent, Button, Box, IconButton } from '@mui/material';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import PhoneIcon from '@mui/icons-material/Phone';
 
 const LeadersPreview = () => {
-  // Sample leaders data - in a real app, this would come from an API
+  // First 3 leaders from the main Leaders page
   const leaders = [
     {
       id: 1,
-      name: 'Dr. James Mwangi',
-      position: 'Principal',
-      department: 'Administration',
-      bio: 'PhD in Educational Leadership with 20+ years of experience in technical education.',
-      imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80',
+      name: 'Eng. Ngabonziza Germain',
+      position: 'School Manager',
+      phone: '+250 788 309 436',
+      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80'
     },
     {
       id: 2,
-      name: 'Eng. Sarah Kariuki',
-      position: 'Head of Engineering Department',
-      department: 'Engineering',
-      bio: 'Professional Engineer with expertise in mechanical and industrial engineering.',
-      imageUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80',
+      name: 'Nyirumuringa Peter',
+      position: 'Secretary',
+      phone: '+250 784 159 152',
+      image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80'
     },
     {
       id: 3,
-      name: 'Mr. David Ochieng',
-      position: 'Head of ICT Department',
-      department: 'Information & Communication Technology',
-      bio: 'MSc in Computer Science with specialization in cybersecurity and networking.',
-      imageUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80',
-    },
+      name: 'Twagirayezu Pacifique',
+      position: 'Deputy Officer in Charge of Studies (DOS)',
+      phone: '+250 788 718 711',
+      image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80'
+    }
   ];
 
   return (
@@ -70,7 +68,7 @@ const LeadersPreview = () => {
         </motion.div>
       </Box>
 
-      <Grid container spacing={4}>
+      <Grid container spacing={{ xs: 3, sm: 4, md: 4 }}>
         {leaders.map((leader, index) => (
           <Grid item xs={12} sm={6} md={4} key={leader.id}>
             <motion.div
@@ -78,69 +76,129 @@ const LeadersPreview = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
+              whileHover={{ y: -10 }}
             >
               <Card
                 sx={{
                   height: '100%',
+                  background: 'rgba(255, 255, 255, 0.98)',
+                  borderRadius: 3,
+                  boxShadow: '0 25px 50px rgba(0,0,0,0.15)',
+                  overflow: 'hidden',
+                  transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                  '&:hover': {
+                    boxShadow: '0 35px 70px rgba(0,0,0,0.25)',
+                    transform: 'scale(1.03)',
+                  },
                   display: 'flex',
                   flexDirection: 'column',
-                  borderRadius: 3,
-                  overflow: 'hidden',
-                  boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
-                  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                  background: 'white',
-                  '&:hover': {
-                    transform: 'translateY(-10px)',
-                    boxShadow: '0 20px 40px rgba(0,0,0,0.15)',
-                  },
+                  minHeight: { xs: 420, sm: 440, md: 460 },
                 }}
               >
-                <Box sx={{ position: 'relative', height: 250 }}>
-                  <CardMedia
-                    component="img"
-                    height="100%"
-                    image={leader.imageUrl}
-                    alt={leader.name}
-                    sx={{ objectFit: 'cover' }}
-                  />
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)',
-                    }}
-                  />
-                </Box>
-                <CardContent sx={{ flexGrow: 1, pt: 3, background: 'linear-gradient(to bottom, rgba(255,255,255,0.1) 0%, white 100%)' }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <Avatar 
-                      src={leader.imageUrl} 
-                      alt={leader.name}
-                      sx={{ width: 60, height: 60, mr: 2, border: '3px solid', borderColor: 'primary.main' }}
-                    />
-                    <Box>
-                      <Typography
-                        gutterBottom
-                        variant="h6"
-                        component="h3"
-                        sx={{ fontWeight: 700, color: 'primary.main' }}
-                      >
-                        {leader.name}
-                      </Typography>
-                      <Typography variant="body2" color="secondary.main" sx={{ fontWeight: 600 }}>
-                        {leader.position}
-                      </Typography>
+                <Box
+                  component="img"
+                  src={leader.image}
+                  alt={leader.name}
+                  sx={{
+                    width: '100%',
+                    height: { xs: 180, sm: 200, md: 220 },
+                    objectFit: 'cover',
+                    borderBottom: '4px solid #e74c3c',
+                  }}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = 'https://via.placeholder.com/400x220/e74c3c/FFFFFF?text=' + encodeURIComponent(leader.name);
+                  }}
+                />
+                
+                <CardContent sx={{ 
+                  p: { xs: 2, sm: 2.5, md: 3 }, 
+                  flexGrow: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  height: '100%',
+                }}>
+                  <Box sx={{ mb: 2 }}>
+                    <Typography 
+                      variant="h6" 
+                      align="center"
+                      sx={{ 
+                        fontWeight: 800, 
+                        color: '#2c3e50',
+                        fontSize: { xs: '1rem', sm: '1.1rem', md: '1.2rem' },
+                        mb: 1.5,
+                        lineHeight: 1.3,
+                        minHeight: { xs: '2.6rem', sm: '2.8rem', md: '3rem' },
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      {leader.name}
+                    </Typography>
+                    
+                    <Box
+                      sx={{
+                        backgroundColor: '#e74c3c',
+                        color: 'white',
+                        px: { xs: 2, sm: 2.5, md: 3 },
+                        py: { xs: 1, sm: 1.2, md: 1.5 },
+                        borderRadius: 2,
+                        fontWeight: 700,
+                        fontSize: { xs: '0.75rem', sm: '0.8rem', md: '0.85rem' },
+                        textAlign: 'center',
+                        boxShadow: '0 4px 15px rgba(231, 76, 60, 0.3)',
+                        minHeight: { xs: '2.2rem', sm: '2.4rem', md: '2.6rem' },
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      {leader.position}
                     </Box>
                   </Box>
-                  <Typography variant="body2" color="text.secondary" paragraph>
-                    {leader.bio}
-                  </Typography>
-                  <Box sx={{ mt: 2 }}>
-                    <Typography variant="caption" color="text.secondary" sx={{ fontStyle: 'italic' }}>
-                      {leader.department}
+                  
+                  <Box sx={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    mt: 'auto',
+                    p: { xs: 1, sm: 1.5, md: 2 },
+                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                    borderRadius: 2,
+                    border: '1px solid rgba(52, 152, 219, 0.2)',
+                  }}>
+                    <IconButton 
+                      size="small"
+                      sx={{ 
+                        color: '#3498db',
+                        mr: 1,
+                        p: 0.5,
+                        '&:hover': {
+                          backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                          transform: 'scale(1.1)',
+                        }
+                      }}
+                      onClick={() => window.location.href = `tel:${leader.phone.replace(/\s/g, '')}`}
+                    >
+                      <PhoneIcon sx={{ fontSize: { xs: '1.2rem', sm: '1.3rem', md: '1.4rem' } }} />
+                    </IconButton>
+                    <Typography 
+                      variant="body2"
+                      sx={{ 
+                        fontWeight: 600,
+                        color: '#2c3e50',
+                        fontSize: { xs: '0.85rem', sm: '0.9rem', md: '0.95rem' },
+                        cursor: 'pointer',
+                        '&:hover': {
+                          color: '#3498db',
+                          textDecoration: 'underline',
+                        }
+                      }}
+                      onClick={() => window.location.href = `tel:${leader.phone.replace(/\s/g, '')}`}
+                    >
+                      {leader.phone}
                     </Typography>
                   </Box>
                 </CardContent>

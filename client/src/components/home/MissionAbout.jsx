@@ -167,7 +167,7 @@ const MissionAbout = () => {
                   mb: 2,
                 }}
               >
-                Established in 1995, NYANZA Technical Secondary School has been at the forefront of technical education in Kenya. Our institution offers a wide range of programs designed to meet the evolving needs of the industry.
+                The foundation of Nyanza Technical Secondary School is rooted in a vision of national progress. On November 4th, 2005, our institution was officially inaugurated by His Excellency Paul Kagame, the President of the Republic of Rwanda, marking a new chapter in technical education for the region. Since that milestone, Nyanza TSS has grown into more than just a school; it has become a vibrant community of excellence.
               </Typography>
               <Typography
                 variant="body1"
@@ -177,7 +177,7 @@ const MissionAbout = () => {
                   color: 'text.secondary',
                 }}
               >
-                With state-of-the-art facilities, experienced faculty, and strong industry partnerships, we ensure our graduates are job-ready and equipped with the latest technical skills.
+                
               </Typography>
             </StyledPaper>
           </motion.div>

@@ -40,11 +40,11 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: [
-      '"Inter"',
-      '"Roboto"',
-      '"Helvetica"',
-      '"Arial"',
-      'sans-serif',
+      '"Bookman Old Style"',
+      '"Bookman"',
+      '"URW Bookman L"',
+      '"Georgia"',
+      'serif',
     ].join(','),
     h1: {
       fontSize: '2.5rem',

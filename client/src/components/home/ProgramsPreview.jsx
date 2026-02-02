@@ -1,41 +1,36 @@
 import React from 'react';
-import { Container, Grid, Typography, Card, CardContent, CardMedia, Button, Box, Chip } from '@mui/material';
+import { Container, Grid, Typography, Card, CardContent, Button, Box, Chip } from '@mui/material';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import EngineeringIcon from '@mui/icons-material/Engineering';
-import ComputerIcon from '@mui/icons-material/Computer';
-import ScienceIcon from '@mui/icons-material/Science';
+import logoImg from '../../assets/images/logo.png';
 
 const ProgramsPreview = () => {
-  // Sample programs data - in a real app, this would come from an API
+  // First 3 programs from the main Programs page
   const programs = [
     {
       id: 1,
-      title: 'Electrical Engineering',
-      description: 'Comprehensive program covering electrical power systems, electronics, and control systems.',
-      duration: '4 Years',
-      imageUrl: 'https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
-      icon: <EngineeringIcon sx={{ fontSize: 40 }} />,
-      category: 'Engineering'
+      name: 'Computer System and Architecture',
+      description: 'Comprehensive training in computer systems, architecture, and software development.',
+      duration: '3 Years',
+      requirements: 'Being passionate about technology and embedded systems',
+      image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80'
     },
     {
       id: 2,
-      title: 'Computer Science',
-      description: 'Modern computing, software development, algorithms, and data structures.',
+      name: 'Electronics and Telecommunication Technology',
+      description: 'Hands-on experience in electronics design, manufacturing, and maintenance.',
       duration: '3 Years',
-      imageUrl: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
-      icon: <ComputerIcon sx={{ fontSize: 40 }} />,
-      category: 'Technology'
+      requirements: 'Being passionate about electronics and telecommunications',
+      image: 'https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80'
     },
     {
       id: 3,
-      title: 'Mechanical Engineering',
-      description: 'Design, analysis, manufacturing, and maintenance of mechanical systems.',
-      duration: '4 Years',
-      imageUrl: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
-      icon: <ScienceIcon sx={{ fontSize: 40 }} />,
-      category: 'Engineering'
-    },
+      name: 'Multimedia Production',
+      description: 'Production of multimedia content for various platforms and industries.',
+      duration: '3 Years',
+      requirements: 'Being passionate about Camera operation, videos editing and sound editing',
+      image: 'https://images.unsplash.com/photo-1551817958-d9d86fb29431?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80'
+    }
   ];
 
   return (
@@ -76,7 +71,7 @@ const ProgramsPreview = () => {
         </motion.div>
       </Box>
 
-      <Grid container spacing={4}>
+      <Grid container spacing={{ xs: 3, sm: 4, md: 4 }}>
         {programs.map((program, index) => (
           <Grid item xs={12} sm={6} md={4} key={program.id}>
             <motion.div
@@ -88,88 +83,106 @@ const ProgramsPreview = () => {
               <Card
                 sx={{
                   height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  borderRadius: 3,
+                  background: 'rgba(255, 255, 255, 0.95)',
+                  backdropFilter: 'blur(10px)',
+                  borderRadius: 4,
+                  boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
                   overflow: 'hidden',
-                  boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
                   transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                  background: 'white',
                   '&:hover': {
                     transform: 'translateY(-10px)',
-                    boxShadow: '0 20px 40px rgba(0,0,0,0.15)',
+                    boxShadow: '0 30px 60px rgba(0,0,0,0.2)',
                   },
+                  display: 'flex',
+                  flexDirection: 'column',
+                  minHeight: { xs: 400, sm: 450, md: 450 },
                 }}
               >
-                <Box sx={{ position: 'relative', height: 200 }}>
-                  <CardMedia
-                    component="img"
-                    height="100%"
-                    image={program.imageUrl}
-                    alt={program.title}
-                    sx={{ objectFit: 'cover' }}
-                  />
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      top: 16,
-                      right: 16,
-                      background: 'rgba(255, 255, 255, 0.9)',
-                      backdropFilter: 'blur(10px)',
-                      borderRadius: 16,
-                      px: 1.5,
-                      py: 0.5,
+                <Box
+                  component="img"
+                  src={program.image}
+                  alt={program.name}
+                  sx={{
+                    width: '100%',
+                    height: { xs: 120, sm: 140, md: 150 },
+                    objectFit: 'cover',
+                    flexShrink: 0,
+                  }}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = 'https://via.placeholder.com/400x150/2c3e50/FFFFFF?text=' + encodeURIComponent(program.name);
+                  }}
+                />
+                <CardContent sx={{ 
+                  p: { xs: 2, sm: 3, md: 4 }, 
+                  flexGrow: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <Box sx={{ width: { xs: 40, sm: 45, md: 50 }, height: { xs: 40, sm: 45, md: 50 }, mr: { xs: 1, sm: 2 }, overflow: 'hidden', borderRadius: '50%', flexShrink: 0 }}>
+                      <img 
+                        src={logoImg} 
+                        alt="NYANZA TSS Logo"
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    </Box>
+                    <Typography 
+                      variant="h6" 
+                      sx={{ 
+                        fontWeight: 700, 
+                        color: 'primary.main',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        fontSize: { xs: '0.9rem', sm: '1rem', md: '1.1rem' }
+                      }}
+                    >
+                      {program.name}
+                    </Typography>
+                  </Box>
+                  
+                  <Typography 
+                    variant="body2" 
+                    paragraph 
+                    sx={{ 
+                      color: 'text.secondary', 
+                      lineHeight: 1.6, 
+                      mb: 2,
+                      flexGrow: 1,
+                      display: '-webkit-box',
+                      WebkitLineClamp: 4,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                      fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.9rem' }
                     }}
                   >
-                    <Chip
-                      label={program.category}
-                      size="small"
-                      sx={{ 
-                        backgroundColor: 'primary.main', 
-                        color: 'white',
-                        fontWeight: 'bold',
-                        fontSize: '0.75rem'
-                      }}
-                    />
-                  </Box>
-                </Box>
-                <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', pt: 3 }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-                    <Box sx={{ 
-                      backgroundColor: 'primary.main', 
-                      borderRadius: '50%', 
-                      width: 80, 
-                      height: 80, 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      justifyContent: 'center',
-                      color: 'white',
-                      boxShadow: '0 4px 12px rgba(44, 62, 80, 0.3)',
-                      mx: 'auto'
-                    }}>
-                      {program.icon}
-                    </Box>
-                  </Box>
-                  <Typography
-                    gutterBottom
-                    variant="h6"
-                    component="h3"
-                    sx={{ fontWeight: 700, textAlign: 'center', color: 'primary.main', mb: 1 }}
-                  >
-                    {program.title}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" paragraph sx={{ flexGrow: 1, textAlign: 'center' }}>
                     {program.description}
                   </Typography>
-                  <Box sx={{ mt: 'auto', pt: 2, textAlign: 'center' }}>
-                    <Chip
-                      label={`Duration: ${program.duration}`}
-                      size="small"
+                  
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 1 }}>
+                    <Chip 
+                      label={program.duration} 
+                      size="small" 
                       sx={{ 
-                        backgroundColor: 'accent.main', 
-                        color: 'white',
-                        fontWeight: 'bold'
-                      }}
+                        backgroundColor: 'primary.light', 
+                        color: 'primary.contrastText',
+                        fontWeight: 600,
+                        fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                        flexShrink: 0,
+                      }} 
+                    />
+                    <Chip 
+                      label={program.requirements} 
+                      size="small" 
+                      sx={{ 
+                        backgroundColor: 'secondary.light', 
+                        color: 'secondary.contrastText',
+                        fontWeight: 600,
+                        fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                        flexShrink: 0,
+                      }} 
                     />
                   </Box>
                 </CardContent>
