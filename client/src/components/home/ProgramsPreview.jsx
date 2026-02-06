@@ -13,7 +13,7 @@ const ProgramsPreview = () => {
       description: 'Comprehensive training in computer systems, architecture, and software development.',
       duration: '3 Years',
       requirements: 'Being passionate about technology and embedded systems',
-      image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80'
+      image: '/assets/images/computer.jpg'
     },
     {
       id: 2,
@@ -21,7 +21,7 @@ const ProgramsPreview = () => {
       description: 'Hands-on experience in electronics design, manufacturing, and maintenance.',
       duration: '3 Years',
       requirements: 'Being passionate about electronics and telecommunications',
-      image: 'https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80'
+      image: '/assets/images/mainstaff.jpg'
     },
     {
       id: 3,
@@ -29,7 +29,7 @@ const ProgramsPreview = () => {
       description: 'Production of multimedia content for various platforms and industries.',
       duration: '3 Years',
       requirements: 'Being passionate about Camera operation, videos editing and sound editing',
-      image: 'https://images.unsplash.com/photo-1551817958-d9d86fb29431?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80'
+      image: '/assets/images/multimedia.jpg'
     }
   ];
 
@@ -217,7 +217,7 @@ const ProgramsPreview = () => {
               },
             }}
           >
-            View All Programs
+            View More Programs
           </Button>
         </motion.div>
       </Box>

@@ -36,9 +36,7 @@ router.post(
     body('title', 'Title is required').not().isEmpty(),
     body('description', 'Description is required').not().isEmpty(),
     body('duration', 'Duration is required').not().isEmpty(),
-    body('curriculum', 'Curriculum is required').not().isEmpty(),
-    body('imageUrl', 'Image URL is required').not().isEmpty(),
-    body('category', 'Category is required').not().isEmpty(),
+    body('requirements', 'Requirements are required').not().isEmpty(),
   ],
   createProgram
 );
@@ -53,7 +51,6 @@ router.put(
     body('title', 'Title is required').not().isEmpty(),
     body('description', 'Description is required').not().isEmpty(),
     body('duration', 'Duration is required').not().isEmpty(),
-    body('curriculum', 'Curriculum is required').not().isEmpty(),
   ],
   updateProgram
 );

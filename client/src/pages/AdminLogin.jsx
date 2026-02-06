@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
-import { Container, Typography, Box, TextField, Button, Alert, Paper, Avatar } from '@mui/material';
+import { Container, Typography, Box, TextField, Button, Alert, Paper, Avatar, IconButton, InputAdornment, FormControl, OutlinedInput, InputLabel } from '@mui/material';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import LockIcon from '@mui/icons-material/Lock';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { authAPI } from '../services/api';
 
 const AdminLogin = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [loginStatus, setLoginStatus] = useState(null); // null, 'loading', 'success', 'error'
   const navigate = useNavigate();
 
@@ -19,35 +23,46 @@ const AdminLogin = () => {
     });
   };
 
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     // Show loading state
     setLoginStatus('loading');
     
-    // Simulate API call to backend
+    console.log('Login attempt with:', { email: formData.email, password: formData.password });
+    
     try {
-      // In a real application, you would send the login credentials to your backend API
-      // For now, we'll simulate a successful login for demo purposes
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const response = await authAPI.login({
+        email: formData.email,
+        password: formData.password
+      });
       
-      // Simulate successful login (in a real app, you'd check credentials against the database)
-      if (formData.email === 'admin@nyanzatss.edu.ke' && formData.password === 'admin123') {
-        setLoginStatus('success');
-        
-        // Redirect to dashboard after a delay (in a real app, you'd save the token and redirect)
-        setTimeout(() => {
-          navigate('/admin-dashboard');
-        }, 1500);
-      } else {
-        setLoginStatus('error');
-        
-        // Reset status after 5 seconds
-        setTimeout(() => {
-          setLoginStatus(null);
-        }, 5000);
-      }
+      console.log('Login response:', response);
+
+      // Save token to localStorage
+      localStorage.setItem('token', response.data.token);
+      
+      // Update the auth header for future requests
+      const api = require('../services/api').default;
+      api.defaults.headers.common['x-auth-token'] = response.data.token;
+      
+      setLoginStatus('success');
+      
+      // Redirect to dashboard after a brief delay
+      setTimeout(() => {
+        navigate('/admin-dashboard');
+      }, 1000);
     } catch (error) {
+      console.error('Login error:', error);
+      console.error('Error response:', error.response);
       setLoginStatus('error');
       
       // Reset status after 5 seconds
@@ -122,6 +137,10 @@ const AdminLogin = () => {
             {loginStatus === 'error' && (
               <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
                 Invalid credentials. Please check your email and password.
+                <br />
+                <small>
+                  If you're sure the credentials are correct, please check the browser console for more details.
+                </small>
               </Alert>
             )}
             
@@ -154,28 +173,33 @@ const AdminLogin = () => {
               sx={{ mb: 2 }}
             />
 
-            <TextField
-              fullWidth
-              label="Password"
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              variant="outlined"
-              margin="normal"
-              InputProps={{
-                sx: {
+            <FormControl fullWidth variant="outlined" margin="normal" sx={{ mb: 3 }}>
+              <InputLabel htmlFor="password">Password</InputLabel>
+              <OutlinedInput
+                id="password"
+                name="password"
+                type={showPassword ? 'text' : 'password'}
+                value={formData.password}
+                onChange={handleChange}
+                required
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                sx={{
                   borderRadius: 2,
-                }
-              }}
-              InputLabelProps={{
-                sx: {
                   fontWeight: 500,
-                }
-              }}
-              sx={{ mb: 3 }}
-            />
+                }}
+              />
+            </FormControl>
 
             <motion.div
               whileHover={{ scale: 1.02 }}
@@ -209,7 +233,7 @@ const AdminLogin = () => {
 
             <Box sx={{ mt: 2, textAlign: 'center' }}>
               <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
-                Demo credentials: admin@nyanzatss.edu.ke / admin123
+                Use your registered credentials to sign in
               </Typography>
             </Box>
           </Box>

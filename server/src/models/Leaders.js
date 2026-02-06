@@ -11,31 +11,19 @@ const leaderSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  department: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  bio: {
-    type: String,
-    required: true,
-  },
-  imageUrl: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    trim: true,
-  },
   phone: {
     type: String,
+    required: true,
     trim: true,
   },
-  linkedinUrl: {
+  qualification: {
     type: String,
+    required: true,
     trim: true,
+  },
+  image: {
+    type: String,
+    default: '',
   },
   isActive: {
     type: Boolean,

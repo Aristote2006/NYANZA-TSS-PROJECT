@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: nyanza-tss-backend
+    env: node
+    buildCommand: |
+      npm install
+      cd ../client
+      npm install
+      npm run build
+      cd ../server
+      npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        sync: false
+      - key: MONGO_URI
+        sync: false

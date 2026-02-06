@@ -14,25 +14,13 @@ const programSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  prerequisites: {
-    type: String,
-    default: 'None',
-  },
-  curriculum: {
-    type: [String],
-    required: true,
-  },
-  imageUrl: {
+  requirements: {
     type: String,
     required: true,
   },
-  category: {
+  image: {
     type: String,
-    required: true,
-  },
-  level: {
-    type: String,
-    default: 'Beginner',
+    default: '',
   },
   isActive: {
     type: Boolean,

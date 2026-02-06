@@ -10,56 +10,56 @@ const Leaders = () => {
       name: 'Eng. Ngabonziza Germain',
       position: 'School Manager',
       phone: '+250 788 309 436',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80'
+      image: '/assets/images/manager.jpg'
     },
     {
       id: 2,
       name: 'Nyirumuringa Peter',
       position: 'Secretary',
       phone: '+250 784 159 152',
-      image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80'
+      image: '/assets/images/he.jpeg'
     },
     {
       id: 3,
       name: 'Twagirayezu Pacifique',
-      position: 'Deputy Officer in Charge of Studies (DOS)',
+      position: 'Deputy School Manager in Charge of Studies (DOS)',
       phone: '+250 788 718 711',
-      image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80'
+      image: '/assets/images/dos.jpg'
     },
     {
       id: 4,
       name: 'Harerimana Jean Damascène',
       position: 'Deputy Officer in Charge of Discipline (DOD)',
       phone: '+250 788 503 309',
-      image: 'https://images.unsplash.com/photo-1551836022-deb4988cc6c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80'
+      image: '/assets/images/prefet.jpg'
     },
     {
       id: 5,
       name: 'IZABAYO Claumbine',
       position: 'Accountant',
       phone: '+250 788 521 339',
-      image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80'
+      image: '/assets/images/accountant.jpg'
     },
     {
       id: 6,
       name: 'TWAGIRIMANA Jean Baptiste',
       position: 'Recovery',
       phone: '+250 788 852 475',
-      image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80'
+      image: '/assets/images/mainstaff.jpg'
     },
     {
       id: 7,
       name: 'TUYISHIME Ange Kizito',
       position: 'Dean of Teachers',
       phone: '+250 788 253 932',
-      image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80'
+      image: '/assets/images/staffteam.jpg'
     },
     {
       id: 8,
       name: 'Eng. AHIMANA Jean Marie Vianney',
       position: 'Head of ICT Department',
       phone: '+250 788 804 059',
-      image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80'
+      image: '/assets/images/computer.jpg'
     }
   ];
 
@@ -120,7 +120,7 @@ const Leaders = () => {
           </Typography>
         </motion.div>
 
-        <Grid container spacing={{ xs: 3, sm: 4, md: 4 }}>
+        <Grid container spacing={{ xs: 3, sm: 4, md: 4 }} sx={{ alignItems: 'stretch' }}>
           {leaders.map((leader, index) => (
             <Grid item xs={12} sm={6} md={4} key={leader.id}>
               <motion.div
@@ -136,14 +136,8 @@ const Leaders = () => {
                     borderRadius: 3,
                     boxShadow: '0 25px 50px rgba(0,0,0,0.15)',
                     overflow: 'hidden',
-                    transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                    '&:hover': {
-                      boxShadow: '0 35px 70px rgba(0,0,0,0.25)',
-                      transform: 'scale(1.03)',
-                    },
                     display: 'flex',
                     flexDirection: 'column',
-                    minHeight: { xs: 420, sm: 440, md: 460 },
                   }}
                 >
                   <Box
@@ -152,23 +146,23 @@ const Leaders = () => {
                     alt={leader.name}
                     sx={{
                       width: '100%',
-                      height: { xs: 180, sm: 200, md: 220 },
+                      height: 'auto',
                       objectFit: 'cover',
+                      objectPosition: 'center',
                       borderBottom: '4px solid #e74c3c',
                     }}
                     onError={(e) => {
                       e.target.onerror = null;
-                      e.target.src = 'https://via.placeholder.com/400x220/e74c3c/FFFFFF?text=' + encodeURIComponent(leader.name);
+                      e.target.src = 'https://via.placeholder.com/400x300/e74c3c/FFFFFF?text=' + encodeURIComponent(leader.name);
                     }}
                   />
                   
                   <CardContent sx={{ 
                     p: { xs: 2, sm: 2.5, md: 3 }, 
-                    flexGrow: 1,
+                    flex: '0 0 auto',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
-                    height: '100%',
                   }}>
                     <Box sx={{ mb: 2 }}>
                       <Typography 
@@ -257,6 +251,147 @@ const Leaders = () => {
               </motion.div>
             </Grid>
           ))}
+        </Grid>
+      </Container>
+      
+      {/* Achievements Section */}
+      <Container maxWidth="lg" sx={{ py: 8, mt: 8, background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)' }}>
+        <Box sx={{ textAlign: 'center', mb: 8 }}>
+          <Typography
+            variant="h2"
+            component="h2"
+            sx={{
+              fontSize: { xs: '2rem', md: '2.5rem' },
+              fontWeight: 700,
+              mb: 6,
+              background: 'linear-gradient(45deg, #2c3e50, #34495e)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
+            Our Achievements
+          </Typography>
+        </Box>
+        
+        <Grid container spacing={4}>
+          <Grid item xs={12} sm={4}>
+            <Box
+              sx={{
+                textAlign: 'center',
+                py: 4,
+                background: 'rgba(255, 255, 255, 0.98)',
+                borderRadius: 3,
+                boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                '&:hover': {
+                  transform: 'translateY(-5px)',
+                  boxShadow: '0 15px 40px rgba(0,0,0,0.15)',
+                },
+              }}
+            >
+              <Typography
+                variant="h2"
+                component="div"
+                sx={{
+                  fontSize: '3rem',
+                  fontWeight: 700,
+                  color: 'primary.main',
+                  mb: 1,
+                  background: 'linear-gradient(45deg, #2c3e50, #34495e)',
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                28+
+              </Typography>
+              <Typography variant="h6" color="primary.main" sx={{ fontWeight: 600 }}>
+                Years of Excellence
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                Dedicated to quality education
+              </Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <Box
+              sx={{
+                textAlign: 'center',
+                py: 4,
+                background: 'rgba(255, 255, 255, 0.98)',
+                borderRadius: 3,
+                boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                '&:hover': {
+                  transform: 'translateY(-5px)',
+                  boxShadow: '0 15px 40px rgba(0,0,0,0.15)',
+                },
+              }}
+            >
+              <Typography
+                variant="h2"
+                component="div"
+                sx={{
+                  fontSize: '3rem',
+                  fontWeight: 700,
+                  color: 'accent.main',
+                  mb: 1,
+                  background: 'linear-gradient(45deg, #3498db, #2980b9)',
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  WebKitTextFillColor: 'transparent',
+                }}
+              >
+                5000+
+              </Typography>
+              <Typography variant="h6" color="primary.main" sx={{ fontWeight: 600 }}>
+                Alumni Graduated
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                Successful professionals worldwide
+              </Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <Box
+              sx={{
+                textAlign: 'center',
+                py: 4,
+                background: 'rgba(255, 255, 255, 0.98)',
+                borderRadius: 3,
+                boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                '&:hover': {
+                  transform: 'translateY(-5px)',
+                  boxShadow: '0 15px 40px rgba(0,0,0,0.15)',
+                },
+              }}
+            >
+              <Typography
+                variant="h2"
+                component="div"
+                sx={{
+                  fontSize: '3rem',
+                  fontWeight: 700,
+                  color: 'secondary.main',
+                  mb: 1,
+                  background: 'linear-gradient(45deg, #e74c3c, #c0392b)',
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  WebKitTextFillColor: 'transparent',
+                }}
+              >
+                15+
+              </Typography>
+              <Typography variant="h6" color="primary.main" sx={{ fontWeight: 600 }}>
+                Programs Offered
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                Diverse technical disciplines
+              </Typography>
+            </Box>
+          </Grid>
         </Grid>
       </Container>
     </Box>

@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+// Hardcode the API URL for testing
+const API_BASE_URL = 'http://localhost:5000/api';
+
+console.log('API_BASE_URL:', API_BASE_URL);
 
 // Create axios instance
 const api = axios.create({
@@ -16,6 +19,30 @@ const setAuthToken = (token) => {
   }
 };
 
+// Add request interceptor for debugging
+api.interceptors.request.use(
+  (config) => {
+    console.log('API Request:', config);
+    return config;
+  },
+  (error) => {
+    console.error('API Request Error:', error);
+    return Promise.reject(error);
+  }
+);
+
+// Add response interceptor for debugging
+api.interceptors.response.use(
+  (response) => {
+    console.log('API Response:', response);
+    return response;
+  },
+  (error) => {
+    console.error('API Response Error:', error);
+    return Promise.reject(error);
+  }
+);
+
 // Auth API
 export const authAPI = {
   register: (userData) => api.post('/auth/register', userData),
@@ -30,11 +57,19 @@ export const newsAPI = {
   getById: (id) => api.get(`/news/${id}`),
   create: (newsData, token) => {
     setAuthToken(token);
-    return api.post('/news', newsData);
+    return api.post('/news', newsData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
   },
   update: (id, newsData, token) => {
     setAuthToken(token);
-    return api.put(`/news/${id}`, newsData);
+    return api.put(`/news/${id}`, newsData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
   },
   delete: (id, token) => {
     setAuthToken(token);
@@ -49,11 +84,19 @@ export const leadersAPI = {
   getById: (id) => api.get(`/leaders/${id}`),
   create: (leaderData, token) => {
     setAuthToken(token);
-    return api.post('/leaders', leaderData);
+    return api.post('/leaders', leaderData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
   },
   update: (id, leaderData, token) => {
     setAuthToken(token);
-    return api.put(`/leaders/${id}`, leaderData);
+    return api.put(`/leaders/${id}`, leaderData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
   },
   delete: (id, token) => {
     setAuthToken(token);
@@ -68,11 +111,19 @@ export const programsAPI = {
   getById: (id) => api.get(`/programs/${id}`),
   create: (programData, token) => {
     setAuthToken(token);
-    return api.post('/programs', programData);
+    return api.post('/programs', programData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
   },
   update: (id, programData, token) => {
     setAuthToken(token);
-    return api.put(`/programs/${id}`, programData);
+    return api.put(`/programs/${id}`, programData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
   },
   delete: (id, token) => {
     setAuthToken(token);

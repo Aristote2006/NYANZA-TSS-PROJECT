@@ -35,10 +35,8 @@ router.post(
   [
     body('name', 'Name is required').not().isEmpty(),
     body('position', 'Position is required').not().isEmpty(),
-    body('department', 'Department is required').not().isEmpty(),
-    body('bio', 'Bio is required').not().isEmpty(),
-    body('imageUrl', 'Image URL is required').not().isEmpty(),
-    body('email', 'Please include a valid email').isEmail(),
+    body('phone', 'Phone number is required').not().isEmpty(),
+    body('qualification', 'Qualification is required').not().isEmpty(),
   ],
   createLeader
 );
@@ -52,8 +50,8 @@ router.put(
   [
     body('name', 'Name is required').not().isEmpty(),
     body('position', 'Position is required').not().isEmpty(),
-    body('department', 'Department is required').not().isEmpty(),
-    body('bio', 'Bio is required').not().isEmpty(),
+    body('phone', 'Phone number is required').not().isEmpty(),
+    body('qualification', 'Qualification is required').not().isEmpty(),
   ],
   updateLeader
 );

@@ -35,9 +35,6 @@ router.post(
   [
     body('title', 'Title is required').not().isEmpty(),
     body('content', 'Content is required').not().isEmpty(),
-    body('summary', 'Summary is required').not().isEmpty(),
-    body('imageUrl', 'Image URL is required').not().isEmpty(),
-    body('author', 'Author is required').not().isEmpty(),
   ],
   createNews
 );
@@ -51,7 +48,6 @@ router.put(
   [
     body('title', 'Title is required').not().isEmpty(),
     body('content', 'Content is required').not().isEmpty(),
-    body('summary', 'Summary is required').not().isEmpty(),
   ],
   updateNews
 );

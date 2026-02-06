@@ -11,7 +11,7 @@ const Programs = () => {
       description: 'Comprehensive training in computer systems, architecture, and software development.',
       duration: '3 Years',
       requirements: 'Being passionate about technology and embedded systems',
-      image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80'
+      image: '/assets/images/computer.jpg'
     },
     {
       id: 2,
@@ -19,7 +19,7 @@ const Programs = () => {
       description: 'Hands-on experience in electronics design, manufacturing, and maintenance.',
       duration: '3 Years',
       requirements: 'Being passionate about electronics and telecommunications',
-      image: 'https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80'
+      image: '/assets/images/mainstaff.jpg'
     },
     {
       id: 3,
@@ -27,7 +27,7 @@ const Programs = () => {
       description: 'Production of multimedia content for various platforms and industries.',
       duration: '3 Years',
       requirements: 'Being passionate about Camera operation, videos editing and sound editing',
-      image: 'https://images.unsplash.com/photo-1551817958-d9d86fb29431?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80'
+      image: '/assets/images/multimedia.jpg'
     },
     {
       id: 4,
@@ -35,64 +35,72 @@ const Programs = () => {
       description: 'Vehicle maintenance, diagnostics, and repair techniques.',
       duration: '3 Years',
       requirements: 'Being passionate about automobiles and mechanics',
-      image: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80'
-    },
+      image: '/assets/images/automobile.jpg'
+         },
     {
       id: 5,
       name: 'Building Construction Technology',
       description: 'Construction techniques, architectural design, and project management.',
       duration: '3 Years',
       requirements: 'Being passionate about construction and architecture',
-      image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80'
-    },
+      image: '/assets/images/construction.jpg'
+        },
     {
       id: 6,
       name: 'Electrical Technology',
       description: 'Electrical systems, machinery design, and maintenance techniques.',
       duration: '3 Years',
       requirements: 'Being passionate about electricity and electronics',
-      image: 'https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80'
-    },
+      image: '/assets/images/electrical.jpg'
+        },
     {
       id: 7,
       name: 'Manufacturing Technology',
       description: 'Modern manufacturing techniques, machine operation, and Welding.',
       duration: '3 Years',
       requirements: 'Being passionate about manufacturing and Welding',
-      image: 'https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80'
-    },
+      image: '/assets/images/manufacturing.jpg'
+        },
     {
       id: 8,
       name: 'Land Survey',
       description: 'Land surveying, mapping, and geographic information systems.',
       duration: '3 Years',
       requirements: 'Being passionate about surveying and mapping',
-      image: 'https://images.unsplash.com/photo-1585913976202-37e413377320?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80'
-    },
+      image: '/assets/images/landsurvey.jpg'
+        },
     {
       id: 9,
       name: 'Interior Design',
       description: 'Interior design, furniture making, and construction techniques.',
       duration: '3 Years',
       requirements: 'Being passionate about interior design and construction',
-      image: 'https://images.unsplash.com/photo-1614569889952-ebd3feb2f088?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80'
-    },
+      image: '/assets/images/mainstaff.jpg'
+        },
     {
       id: 10,
       name: 'Public Works',
       description: 'Water systems, pipe installation, and bridge design.',
       duration: '3 Years',
       requirements: 'Being passionate about public works and infrastructure',
-      image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80'
-    },
+      image: '/assets/images/public.jpg'
+        },
     {
       id: 11,
       name: 'Wood Technology',
       description: 'Woodwork, furniture making, and construction techniques.',
       duration: '3 Years',
       requirements: 'Being passionate about woodwork and construction',
-      image: 'https://images.unsplash.com/photo-1594322249240-a84725d9e129?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80'
-    }
+      image: '/assets/images/wood.jpg'
+        },
+    {
+      id: 12,
+      name: 'Renewable Energy',
+      description: 'Solar energy, wind energy, and renewable energy systems.',
+      duration: '3 Years',
+      requirements: 'Being passionate about renewable energy and sustainability',
+      image: '/assets/images/mainstaff.jpg'
+        }
   ];
 
   return (
@@ -152,19 +160,13 @@ const Programs = () => {
                 <Card
                   sx={{
                     height: '100%',
-                    background: 'rgba(255, 255, 255, 0.95)',
-                    backdropFilter: 'blur(10px)',
+                    background: 'white',
                     borderRadius: 4,
-                    boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+                    boxShadow: '0 10px 20px rgba(0,0,0,0.1)',
                     overflow: 'hidden',
-                    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                    '&:hover': {
-                      transform: 'translateY(-10px)',
-                      boxShadow: '0 30px 60px rgba(0,0,0,0.2)',
-                    },
                     display: 'flex',
                     flexDirection: 'column',
-                    minHeight: { xs: 400, sm: 450, md: 450 },
+                    minHeight: { xs: 500, sm: 550, md: 600 },
                   }}
                 >
                   <Box
@@ -173,9 +175,9 @@ const Programs = () => {
                     alt={program.name}
                     sx={{
                       width: '100%',
-                      height: { xs: 120, sm: 140, md: 150 },
+                      height: { xs: 220, sm: 250, md: 280 },
                       objectFit: 'cover',
-                      flexShrink: 0,
+                      objectPosition: 'center',
                     }}
                     onError={(e) => {
                       e.target.onerror = null;

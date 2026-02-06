@@ -10,19 +10,9 @@ const newsSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  summary: {
+  image: {
     type: String,
-    required: true,
-    trim: true,
-  },
-  imageUrl: {
-    type: String,
-    required: true,
-  },
-  author: {
-    type: String,
-    required: true,
-    trim: true,
+    default: '',
   },
   publishedDate: {
     type: Date,

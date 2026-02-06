@@ -1,5 +1,6 @@
 const News = require('../models/News');
 const { body, validationResult } = require('express-validator');
+const upload = require('../middlewares/uploadMiddleware');
 
 // @desc    Get all news
 // @route   GET /api/news
@@ -51,46 +52,70 @@ const getNewsById = async (req, res) => {
 // @desc    Create news
 // @route   POST /api/news
 // @access  Private
-const createNews = async (req, res) => {
-  try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+const createNews = [
+  upload.single('image'),
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
 
-    const news = new News(req.body);
-    await news.save();
-    res.json(news);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
+      // Handle file upload
+      let imagePath = '';
+      if (req.file) {
+        imagePath = `/uploads/${req.file.filename}`;
+      }
+
+      const newsData = {
+        ...req.body,
+        image: imagePath,
+        publishedDate: new Date()
+      };
+
+      const news = new News(newsData);
+      await news.save();
+      res.json(news);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server error');
+    }
   }
-};
+];
 
 // @desc    Update news
 // @route   PUT /api/news/:id
 // @access  Private
-const updateNews = async (req, res) => {
-  try {
-    const news = await News.findByIdAndUpdate(
-      req.params.id,
-      { $set: req.body },
-      { new: true }
-    );
+const updateNews = [
+  upload.single('image'),
+  async (req, res) => {
+    try {
+      // Handle file upload
+      let updateData = { ...req.body };
+      if (req.file) {
+        updateData.image = `/uploads/${req.file.filename}`;
+      }
 
-    if (!news) {
-      return res.status(404).json({ msg: 'News not found' });
-    }
+      const news = await News.findByIdAndUpdate(
+        req.params.id,
+        { $set: updateData },
+        { new: true }
+      );
 
-    res.json(news);
-  } catch (err) {
-    console.error(err.message);
-    if (err.kind === 'ObjectId') {
-      return res.status(404).json({ msg: 'News not found' });
+      if (!news) {
+        return res.status(404).json({ msg: 'News not found' });
+      }
+
+      res.json(news);
+    } catch (err) {
+      console.error(err.message);
+      if (err.kind === 'ObjectId') {
+        return res.status(404).json({ msg: 'News not found' });
+      }
+      res.status(500).send('Server error');
     }
-    res.status(500).send('Server error');
   }
-};
+];
 
 // @desc    Delete news
 // @route   DELETE /api/news/:id

@@ -1,5 +1,6 @@
 const Leader = require('../models/Leaders');
 const { body, validationResult } = require('express-validator');
+const upload = require('../middlewares/uploadMiddleware');
 
 // @desc    Get all leaders
 // @route   GET /api/leaders
@@ -51,46 +52,69 @@ const getLeaderById = async (req, res) => {
 // @desc    Create leader
 // @route   POST /api/leaders
 // @access  Private
-const createLeader = async (req, res) => {
-  try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+const createLeader = [
+  upload.single('image'),
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
 
-    const leader = new Leader(req.body);
-    await leader.save();
-    res.json(leader);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
+      // Handle file upload
+      let imagePath = '';
+      if (req.file) {
+        imagePath = `/uploads/${req.file.filename}`;
+      }
+
+      const leaderData = {
+        ...req.body,
+        image: imagePath
+      };
+
+      const leader = new Leader(leaderData);
+      await leader.save();
+      res.json(leader);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server error');
+    }
   }
-};
+];
 
 // @desc    Update leader
 // @route   PUT /api/leaders/:id
 // @access  Private
-const updateLeader = async (req, res) => {
-  try {
-    const leader = await Leader.findByIdAndUpdate(
-      req.params.id,
-      { $set: req.body },
-      { new: true }
-    );
+const updateLeader = [
+  upload.single('image'),
+  async (req, res) => {
+    try {
+      // Handle file upload
+      let updateData = { ...req.body };
+      if (req.file) {
+        updateData.image = `/uploads/${req.file.filename}`;
+      }
 
-    if (!leader) {
-      return res.status(404).json({ msg: 'Leader not found' });
-    }
+      const leader = await Leader.findByIdAndUpdate(
+        req.params.id,
+        { $set: updateData },
+        { new: true }
+      );
 
-    res.json(leader);
-  } catch (err) {
-    console.error(err.message);
-    if (err.kind === 'ObjectId') {
-      return res.status(404).json({ msg: 'Leader not found' });
+      if (!leader) {
+        return res.status(404).json({ msg: 'Leader not found' });
+      }
+
+      res.json(leader);
+    } catch (err) {
+      console.error(err.message);
+      if (err.kind === 'ObjectId') {
+        return res.status(404).json({ msg: 'Leader not found' });
+      }
+      res.status(500).send('Server error');
     }
-    res.status(500).send('Server error');
   }
-};
+];
 
 // @desc    Delete leader
 // @route   DELETE /api/leaders/:id

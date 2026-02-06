@@ -1,5 +1,6 @@
 const Program = require('../models/Programs');
 const { body, validationResult } = require('express-validator');
+const upload = require('../middlewares/uploadMiddleware');
 
 // @desc    Get all programs
 // @route   GET /api/programs
@@ -51,46 +52,69 @@ const getProgramById = async (req, res) => {
 // @desc    Create program
 // @route   POST /api/programs
 // @access  Private
-const createProgram = async (req, res) => {
-  try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+const createProgram = [
+  upload.single('image'),
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
 
-    const program = new Program(req.body);
-    await program.save();
-    res.json(program);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
+      // Handle file upload
+      let imagePath = '';
+      if (req.file) {
+        imagePath = `/uploads/${req.file.filename}`;
+      }
+
+      const programData = {
+        ...req.body,
+        image: imagePath
+      };
+
+      const program = new Program(programData);
+      await program.save();
+      res.json(program);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server error');
+    }
   }
-};
+];
 
 // @desc    Update program
 // @route   PUT /api/programs/:id
 // @access  Private
-const updateProgram = async (req, res) => {
-  try {
-    const program = await Program.findByIdAndUpdate(
-      req.params.id,
-      { $set: req.body },
-      { new: true }
-    );
+const updateProgram = [
+  upload.single('image'),
+  async (req, res) => {
+    try {
+      // Handle file upload
+      let updateData = { ...req.body };
+      if (req.file) {
+        updateData.image = `/uploads/${req.file.filename}`;
+      }
 
-    if (!program) {
-      return res.status(404).json({ msg: 'Program not found' });
-    }
+      const program = await Program.findByIdAndUpdate(
+        req.params.id,
+        { $set: updateData },
+        { new: true }
+      );
 
-    res.json(program);
-  } catch (err) {
-    console.error(err.message);
-    if (err.kind === 'ObjectId') {
-      return res.status(404).json({ msg: 'Program not found' });
+      if (!program) {
+        return res.status(404).json({ msg: 'Program not found' });
+      }
+
+      res.json(program);
+    } catch (err) {
+      console.error(err.message);
+      if (err.kind === 'ObjectId') {
+        return res.status(404).json({ msg: 'Program not found' });
+      }
+      res.status(500).send('Server error');
     }
-    res.status(500).send('Server error');
   }
-};
+];
 
 // @desc    Delete program
 // @route   DELETE /api/programs/:id

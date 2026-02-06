@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Typography, Box, Grid, Card, CardContent, CardHeader, Button, Tabs, Tab, Chip, CircularProgress, Alert, Snackbar } from '@mui/material';
 import { motion } from 'framer-motion';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import SchoolIcon from '@mui/icons-material/School';
@@ -525,8 +525,7 @@ const AdminDashboard = () => {
                           <Grid item xs={12} sm={6}>
                             <Button 
                               variant="contained" 
-                              component={Link} 
-                              to="/admin-programs"
+                              href="/admin-programs"
                               fullWidth
                               sx={{ 
                                 py: 2,
@@ -549,27 +548,24 @@ const AdminDashboard = () => {
                           </Grid>
                           <Grid item xs={12} sm={6}>
                             <Button 
-                              variant="outlined" 
-                              component={Link} 
-                              to="/admin-programs/add"
+                              variant="contained" 
+                              href="/admin-programs/add"
                               fullWidth
                               sx={{ 
                                 py: 2,
                                 mb: 2,
-                                borderColor: 'primary.main',
-                                color: 'primary.main',
+                                background: 'linear-gradient(45deg, #2c3e50, #34495e)',
                                 '&:hover': {
-                                  backgroundColor: 'primary.main',
-                                  color: 'white',
-                                  borderColor: 'primary.dark',
+                                  background: 'linear-gradient(45deg, #1a252f, #2c3e50)',
                                   transform: 'translateY(-2px)',
-                                  boxShadow: '0 8px 20px rgba(44, 62, 80, 0.2)'
+                                  boxShadow: '0 8px 20px rgba(44, 62, 80, 0.3)'
                                 },
                                 fontWeight: 600,
                                 fontSize: '1rem',
-                                borderRadius: 2
+                                borderRadius: 2,
+                                boxShadow: '0 4px 15px rgba(44, 62, 80, 0.2)'
                               }}
-                              startIcon={<AssignmentIcon />}
+                              startIcon={<SchoolIcon />}
                             >
                               Add New Program
                             </Button>
@@ -587,8 +583,7 @@ const AdminDashboard = () => {
                           <Grid item xs={12} sm={6}>
                             <Button 
                               variant="contained" 
-                              component={Link} 
-                              to="/admin-news"
+                              href="/admin-news"
                               fullWidth
                               sx={{ 
                                 py: 2,
@@ -611,27 +606,24 @@ const AdminDashboard = () => {
                           </Grid>
                           <Grid item xs={12} sm={6}>
                             <Button 
-                              variant="outlined" 
-                              component={Link} 
-                              to="/admin-news/add"
+                              variant="contained" 
+                              href="/admin-news/add"
                               fullWidth
                               sx={{ 
                                 py: 2,
                                 mb: 2,
-                                borderColor: 'secondary.main',
-                                color: 'secondary.main',
+                                background: 'linear-gradient(45deg, #3498db, #2980b9)',
                                 '&:hover': {
-                                  backgroundColor: 'secondary.main',
-                                  color: 'white',
-                                  borderColor: 'secondary.dark',
+                                  background: 'linear-gradient(45deg, #2980b9, #1c6ea4)',
                                   transform: 'translateY(-2px)',
-                                  boxShadow: '0 8px 20px rgba(44, 62, 80, 0.2)'
+                                  boxShadow: '0 8px 20px rgba(52, 152, 219, 0.3)'
                                 },
                                 fontWeight: 600,
                                 fontSize: '1rem',
-                                borderRadius: 2
+                                borderRadius: 2,
+                                boxShadow: '0 4px 15px rgba(52, 152, 219, 0.2)'
                               }}
-                              startIcon={<AssignmentIcon />}
+                              startIcon={<EventNoteIcon />}
                             >
                               Create Article
                             </Button>
@@ -649,8 +641,7 @@ const AdminDashboard = () => {
                           <Grid item xs={12} sm={6}>
                             <Button 
                               variant="contained" 
-                              component={Link} 
-                              to="/admin-leaders"
+                              href="/admin-leaders"
                               fullWidth
                               sx={{ 
                                 py: 2,
@@ -673,27 +664,24 @@ const AdminDashboard = () => {
                           </Grid>
                           <Grid item xs={12} sm={6}>
                             <Button 
-                              variant="outlined" 
-                              component={Link} 
-                              to="/admin-leaders/add"
+                              variant="contained" 
+                              href="/admin-leaders/add"
                               fullWidth
                               sx={{ 
                                 py: 2,
                                 mb: 2,
-                                borderColor: 'primary.main',
-                                color: 'primary.main',
+                                background: 'linear-gradient(45deg, #e74c3c, #c0392b)',
                                 '&:hover': {
-                                  backgroundColor: 'primary.main',
-                                  color: 'white',
-                                  borderColor: 'primary.dark',
+                                  background: 'linear-gradient(45deg, #c0392b, #a93226)',
                                   transform: 'translateY(-2px)',
-                                  boxShadow: '0 8px 20px rgba(44, 62, 80, 0.2)'
+                                  boxShadow: '0 8px 20px rgba(231, 76, 60, 0.3)'
                                 },
                                 fontWeight: 600,
                                 fontSize: '1rem',
-                                borderRadius: 2
+                                borderRadius: 2,
+                                boxShadow: '0 4px 15px rgba(231, 76, 60, 0.2)'
                               }}
-                              startIcon={<AssignmentIcon />}
+                              startIcon={<PeopleIcon />}
                             >
                               Add New Leader
                             </Button>
@@ -711,8 +699,7 @@ const AdminDashboard = () => {
                           <Grid item xs={12} sm={6}>
                             <Button 
                               variant="contained" 
-                              component={Link} 
-                              to="/admin-messages"
+                              href="/admin-messages"
                               fullWidth
                               sx={{ 
                                 py: 2,
@@ -736,8 +723,7 @@ const AdminDashboard = () => {
                           <Grid item xs={12} sm={6}>
                             <Button 
                               variant="outlined" 
-                              component={Link} 
-                              to="/admin-messages/responded"
+                              href="/admin-messages/responded"
                               fullWidth
                               sx={{ 
                                 py: 2,
@@ -936,8 +922,7 @@ const AdminDashboard = () => {
                         <Button 
                           variant="outlined" 
                           startIcon={<SettingsIcon />}
-                          component={Link} 
-                          to="/admin-profile"
+                          href="/admin-profile"
                           fullWidth
                           sx={{ 
                             py: 1.5,
@@ -962,8 +947,7 @@ const AdminDashboard = () => {
                         <Button 
                           variant="outlined" 
                           startIcon={<AnalyticsIcon />}
-                          component={Link} 
-                          to="/admin-analytics"
+                          href="/admin-analytics"
                           fullWidth
                           sx={{ 
                             py: 1.5,
@@ -988,8 +972,7 @@ const AdminDashboard = () => {
                         <Button 
                           variant="outlined" 
                           startIcon={<BackupIcon />}
-                          component={Link} 
-                          to="/admin-backup"
+                          href="/admin-backup"
                           fullWidth
                           sx={{ 
                             py: 1.5,
@@ -1014,8 +997,7 @@ const AdminDashboard = () => {
                         <Button 
                           variant="contained" 
                           color="error"
-                          component={Link} 
-                          to="/"
+                          href="/"
                           fullWidth
                           sx={{ 
                             py: 1.5,
