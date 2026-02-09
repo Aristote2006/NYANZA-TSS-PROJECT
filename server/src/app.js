@@ -50,21 +50,32 @@ app.use((err, req, res, next) => {
 
 // Serve static assets if in production
 if (process.env.NODE_ENV === 'production') {
-  // Set static folder
-  app.use(express.static('client/build'));
+  // Set static folder - check both possible locations for Render deployment
+  const buildPath = path.join(__dirname, '../../client/build');
+  const localBuildPath = path.join(__dirname, '../client/build');
+  
+  // Use the build path that exists
+  const staticPath = require('fs').existsSync(buildPath) ? buildPath : localBuildPath;
+  app.use(express.static(staticPath));
   
   // Handle SPA routing - serve index.html for any non-API route
   app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../client/build/index.html'));
+    const indexPath = require('fs').existsSync(buildPath) ? 
+      path.resolve(buildPath, 'index.html') : 
+      path.resolve(localBuildPath, 'index.html');
+    res.sendFile(indexPath);
   });
 } else {
   // In development, also serve the React app from client/build if it exists
   // This helps with direct navigation to routes
-  app.use(express.static('client/build'));
+  const devBuildPath = path.join(__dirname, '../client/build');
+  if (require('fs').existsSync(devBuildPath)) {
+    app.use(express.static(devBuildPath));
+  }
   
   // Handle SPA routing in development too
   app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../client/build/index.html'));
+    res.sendFile(path.resolve(devBuildPath, 'index.html'));
   });
 }
 
