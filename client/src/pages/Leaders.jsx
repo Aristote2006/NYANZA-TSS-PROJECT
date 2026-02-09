@@ -10,6 +10,7 @@ const Leaders = () => {
       name: 'Eng. Ngabonziza Germain',
       position: 'School Manager',
       phone: '+250 788 309 436',
+      qualification: 'BSc in Engineering, MBA',
       image: '/assets/images/manager.jpg'
     },
     {
@@ -17,6 +18,7 @@ const Leaders = () => {
       name: 'Nyirumuringa Peter',
       position: 'Secretary',
       phone: '+250 784 159 152',
+      qualification: 'Bachelor of Arts, Diploma in Secretarial Studies',
       image: '/assets/images/he.jpeg'
     },
     {
@@ -24,6 +26,7 @@ const Leaders = () => {
       name: 'Twagirayezu Pacifique',
       position: 'Deputy School Manager in Charge of Studies (DOS)',
       phone: '+250 788 718 711',
+      qualification: 'Master of Education, BSc in Mathematics',
       image: '/assets/images/dos.jpg'
     },
     {
@@ -31,6 +34,7 @@ const Leaders = () => {
       name: 'Harerimana Jean Damascène',
       position: 'Deputy Officer in Charge of Discipline (DOD)',
       phone: '+250 788 503 309',
+      qualification: 'Bachelor of Science in Education',
       image: '/assets/images/prefet.jpg'
     },
     {
@@ -38,6 +42,7 @@ const Leaders = () => {
       name: 'IZABAYO Claumbine',
       position: 'Accountant',
       phone: '+250 788 521 339',
+      qualification: 'CPA, Bachelor of Commerce',
       image: '/assets/images/accountant.jpg'
     },
     {
@@ -45,6 +50,7 @@ const Leaders = () => {
       name: 'TWAGIRIMANA Jean Baptiste',
       position: 'Recovery',
       phone: '+250 788 852 475',
+      qualification: 'Bachelor of Business Administration',
       image: '/assets/images/mainstaff.jpg'
     },
     {
@@ -52,6 +58,7 @@ const Leaders = () => {
       name: 'TUYISHIME Ange Kizito',
       position: 'Dean of Teachers',
       phone: '+250 788 253 932',
+      qualification: 'Master of Arts in Education, PGDE',
       image: '/assets/images/staffteam.jpg'
     },
     {
@@ -59,6 +66,7 @@ const Leaders = () => {
       name: 'Eng. AHIMANA Jean Marie Vianney',
       position: 'Head of ICT Department',
       phone: '+250 788 804 059',
+      qualification: 'BSc in Computer Science, CCNA Certified',
       image: '/assets/images/computer.jpg'
     }
   ];
@@ -198,9 +206,39 @@ const Leaders = () => {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
+                          mb: 2,
                         }}
                       >
                         {leader.position}
+                      </Box>
+                      
+                      {/* Qualification Section */}
+                      <Box
+                        sx={{
+                          backgroundColor: '#3498db',
+                          color: 'white',
+                          px: { xs: 2, sm: 2.5, md: 3 },
+                          py: { xs: 1, sm: 1.2, md: 1.5 },
+                          borderRadius: 2,
+                          fontWeight: 600,
+                          fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.8rem' },
+                          textAlign: 'center',
+                          boxShadow: '0 4px 15px rgba(52, 152, 219, 0.3)',
+                          minHeight: { xs: '2.2rem', sm: '2.4rem', md: '2.6rem' },
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        <Typography
+                          component="span"
+                          sx={{
+                            fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.8rem' },
+                            fontWeight: 600,
+                          }}
+                        >
+                          Qualifications: {leader.qualification}
+                        </Typography>
                       </Box>
                     </Box>
                     

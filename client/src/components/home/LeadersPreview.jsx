@@ -12,6 +12,7 @@ const LeadersPreview = () => {
       name: 'Eng. Ngabonziza Germain',
       position: 'School Manager',
       phone: '+250 788 309 436',
+      qualification: 'BSc in Engineering, MBA',
       image: '/assets/images/manager.jpg'
     },
     {
@@ -19,6 +20,7 @@ const LeadersPreview = () => {
       name: 'Twagirayezu Pacifique',
       position: 'Deputy School Manager in Charge of Studies (DOS)',
       phone: '+250 788 718 711',
+      qualification: 'Master of Education, BSc in Mathematics',
       image: '/assets/images/dos.jpg'
     },
     {
@@ -26,6 +28,7 @@ const LeadersPreview = () => {
       name: 'Harerimana Jean Damascène',
       position: 'Deputy Officer in Charge of Discipline (DOD)',
       phone: '+250 788 503 309',
+      qualification: 'Bachelor of Science in Education',
       image: '/assets/images/prefet.jpg'
     }
   ];
@@ -165,9 +168,39 @@ const LeadersPreview = () => {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
+                          mb: 2,
                         }}
                       >
                         {leader.position}
+                      </Box>
+                      
+                      {/* Qualification Section */}
+                      <Box
+                        sx={{
+                          backgroundColor: '#3498db',
+                          color: 'white',
+                          px: { xs: 2, sm: 2.5, md: 3 },
+                          py: { xs: 1, sm: 1.2, md: 1.5 },
+                          borderRadius: 2,
+                          fontWeight: 600,
+                          fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.8rem' },
+                          textAlign: 'center',
+                          boxShadow: '0 4px 15px rgba(52, 152, 219, 0.3)',
+                          minHeight: { xs: '2.2rem', sm: '2.4rem', md: '2.6rem' },
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        <Typography
+                          component="span"
+                          sx={{
+                            fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.8rem' },
+                            fontWeight: 600,
+                          }}
+                        >
+                          Qualifications: {leader.qualification}
+                        </Typography>
                       </Box>
                     </Box>
                     
