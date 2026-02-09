@@ -50,21 +50,82 @@ app.use((err, req, res, next) => {
 
 // Serve static assets if in production
 if (process.env.NODE_ENV === 'production') {
-  // Set static folder - check both possible locations for Render deployment
-  const buildPath = path.join(__dirname, '../../client/build');
-  const localBuildPath = path.join(__dirname, '../client/build');
+  // Debug logging for Render deployment
+  console.log('Production mode detected');
+  console.log('__dirname:', __dirname);
   
-  // Use the build path that exists
-  const staticPath = require('fs').existsSync(buildPath) ? buildPath : localBuildPath;
-  app.use(express.static(staticPath));
+  // Set static folder - check multiple possible locations for Render deployment
+  const buildPath1 = path.join(__dirname, '../../client/build');
+  const buildPath2 = path.join(__dirname, '../client/build');
+  const buildPath3 = path.join(__dirname, '../../../client/build'); // Extra level up
   
-  // Handle SPA routing - serve index.html for any non-API route
-  app.get('*', (req, res) => {
-    const indexPath = require('fs').existsSync(buildPath) ? 
-      path.resolve(buildPath, 'index.html') : 
-      path.resolve(localBuildPath, 'index.html');
-    res.sendFile(indexPath);
-  });
+  console.log('Checking build paths:');
+  console.log('Path 1 (../../client/build):', buildPath1);
+  console.log('Path 2 (../client/build):', buildPath2);
+  console.log('Path 3 (../../../client/build):', buildPath3);
+  
+  // Check which paths exist
+  const fs = require('fs');
+  const path1Exists = fs.existsSync(buildPath1);
+  const path2Exists = fs.existsSync(buildPath2);
+  const path3Exists = fs.existsSync(buildPath3);
+  
+  console.log('Path existence check:');
+  console.log('Path 1 exists:', path1Exists);
+  console.log('Path 2 exists:', path2Exists);
+  console.log('Path 3 exists:', path3Exists);
+  
+  // Use the first existing path, or fallback to a safe default
+  let staticPath;
+  let indexPath;
+  
+  if (path1Exists) {
+    staticPath = buildPath1;
+    indexPath = path.resolve(buildPath1, 'index.html');
+  } else if (path2Exists) {
+    staticPath = buildPath2;
+    indexPath = path.resolve(buildPath2, 'index.html');
+  } else if (path3Exists) {
+    staticPath = buildPath3;
+    indexPath = path.resolve(buildPath3, 'index.html');
+  } else {
+    // Fallback - try to find build directory in common locations
+    console.log('No build directory found, checking alternative locations...');
+    const alternativePaths = [
+      path.join(process.cwd(), 'client/build'),
+      path.join(process.cwd(), '../client/build'),
+      path.join(__dirname, 'client/build')
+    ];
+    
+    for (const altPath of alternativePaths) {
+      console.log('Checking alternative path:', altPath);
+      if (fs.existsSync(altPath)) {
+        staticPath = altPath;
+        indexPath = path.resolve(altPath, 'index.html');
+        console.log('Found build directory at:', altPath);
+        break;
+      }
+    }
+  }
+  
+  console.log('Selected static path:', staticPath);
+  console.log('Selected index path:', indexPath);
+  
+  if (staticPath && indexPath) {
+    app.use(express.static(staticPath));
+    
+    // Handle SPA routing - serve index.html for any non-API route
+    app.get('*', (req, res) => {
+      console.log('Serving index.html from:', indexPath);
+      res.sendFile(indexPath);
+    });
+  } else {
+    console.log('WARNING: No client build directory found. API-only mode.');
+    // API-only mode - don't serve static files
+    app.get('*', (req, res) => {
+      res.status(404).json({ msg: 'Client build not found - API only mode' });
+    });
+  }
 } else {
   // In development, also serve the React app from client/build if it exists
   // This helps with direct navigation to routes

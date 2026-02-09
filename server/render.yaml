@@ -8,6 +8,8 @@ services:
       npm install
       npm run build
       cd ../server
+      # Copy built client files to server directory for proper serving
+      cp -r ../client/build ./client/build
       npm install
     startCommand: npm start
     envVars:
