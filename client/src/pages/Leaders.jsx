@@ -10,7 +10,7 @@ const Leaders = () => {
       name: 'Eng. Ngabonziza Germain',
       position: 'School Manager',
       phone: '+250 788 309 436',
-      qualification: 'BSc in Engineering, MBA',
+      qualification: 'Masters in Mechanical and Production Engineering',
       image: '/assets/images/manager.jpg'
     },
     {
@@ -18,15 +18,15 @@ const Leaders = () => {
       name: 'Nyirumuringa Peter',
       position: 'Secretary',
       phone: '+250 784 159 152',
-      qualification: 'Bachelor of Arts, Diploma in Secretarial Studies',
-      image: '/assets/images/he.jpeg'
+      qualification: 'Bachelor in Office Administration and Management(OAM)',
+      image: '/assets/images/secretary.jpeg'
     },
     {
       id: 3,
       name: 'Twagirayezu Pacifique',
       position: 'Deputy School Manager in Charge of Studies (DOS)',
       phone: '+250 788 718 711',
-      qualification: 'Master of Education, BSc in Mathematics',
+      qualification: 'Bachelor in Computer Engineering',
       image: '/assets/images/dos.jpg'
     },
     {
@@ -34,7 +34,7 @@ const Leaders = () => {
       name: 'Harerimana Jean Damascène',
       position: 'Deputy Officer in Charge of Discipline (DOD)',
       phone: '+250 788 503 309',
-      qualification: 'Bachelor of Science in Education',
+      qualification: 'Bachelor in Social Sciences',
       image: '/assets/images/prefet.jpg'
     },
     {
@@ -42,7 +42,7 @@ const Leaders = () => {
       name: 'IZABAYO Claumbine',
       position: 'Accountant',
       phone: '+250 788 521 339',
-      qualification: 'CPA, Bachelor of Commerce',
+      qualification: 'Bachelor in Business Management/Accounting',
       image: '/assets/images/accountant.jpg'
     },
     {
@@ -51,7 +51,7 @@ const Leaders = () => {
       position: 'Recovery',
       phone: '+250 788 852 475',
       qualification: 'Bachelor of Business Administration',
-      image: '/assets/images/mainstaff.jpg'
+      image: '/assets/images/baptiste.jpg.jpeg'
     },
     {
       id: 7,
@@ -66,7 +66,7 @@ const Leaders = () => {
       name: 'Eng. AHIMANA Jean Marie Vianney',
       position: 'Head of ICT Department',
       phone: '+250 788 804 059',
-      qualification: 'BSc in Computer Science, CCNA Certified',
+      qualification: 'Masters in Software Engineering',
       image: '/assets/images/computer.jpg'
     }
   ];
