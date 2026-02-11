@@ -180,6 +180,7 @@ const HeroSection = () => {
             filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))'
           }} />
         </IconButton>
+        
         <Grid container spacing={3} alignItems="center" justifyContent="center">
           <Grid item xs={12} md={8} sx={{ textAlign: 'center' }}>
             <motion.div
@@ -201,41 +202,7 @@ const HeroSection = () => {
                   letterSpacing: { xs: '1px', sm: '2px', md: '3px' },
                 }}
               >
-                <Box
-                  component="span"
-                  sx={{
-                    background: 'linear-gradient(90deg, #00A1DE 0%, #FAD201 25%, #00A651 50%, #00A1DE 75%, #FAD201 100%)',
-                    backgroundSize: '400% 100%',
-                    backgroundClip: 'text',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    animation: 'waterFlow 6s ease-in-out infinite',
-                    '@keyframes waterFlow': {
-                      '0%': { backgroundPosition: '0% 50%' },
-                      '100%': { backgroundPosition: '100% 50%' },
-                    },
-                    position: 'relative',
-                    display: 'inline-block',
-                    '&::after': {
-                      content: '""',
-                      position: 'absolute',
-                      bottom: -4,
-                      left: '10%',
-                      width: '80%',
-                      height: '3px',
-                      background: 'linear-gradient(90deg, #00A1DE, #FAD201, #00A651, #00A1DE, #FAD201)',
-                      backgroundSize: '400% 100%',
-                      animation: 'underlineFlow 6s ease-in-out infinite',
-                      '@keyframes underlineFlow': {
-                        '0%': { backgroundPosition: '100% 50%' },
-                        '100%': { backgroundPosition: '0% 50%' },
-                      },
-                      borderRadius: '2px',
-                    }
-                  }}
-                >
-                  WELCOME TO NYANZA TSS
-                </Box>
+                WELCOME TO NYANZA TSS
               </Typography>
               
               <Typography
@@ -251,7 +218,7 @@ const HeroSection = () => {
                   mx: 'auto',
                 }}
               >
-                Empowered in Building the Future accredited in better practical hands-on skills
+                Empowered in Building the Future with Better Hand-on Skills and Knowledge Through Quality Technical Education with Expert Teachers and Character Development
               </Typography>
               
               <Box sx={{ display: 'flex', gap: { xs: 1, sm: 2 }, flexWrap: 'wrap', justifyContent: 'center', mt: 2 }}>
