@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Button, Container, Grid } from '@mui/material';
+import { Box, Typography, Button, Container, Grid, IconButton } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import staffteamImage from '../../assets/images/staffteam.jpg';
 import hero1Image from '../../assets/images/hero1.jpg';
 import hero2Image from '../../assets/images/hero2.jpg';
 import hero3Image from '../../assets/images/hero3.jpg';
 import flagImage from '../../assets/images/flag.jpg';
 import newhouseImage from '../../assets/images/newhouse.jpg';
+import volleyballImage from '../../assets/images/upfront.jpg';
+import basketballImage from '../../assets/images/dorm.webp';
+import footballImage from '../../assets/images/flag.jpeg';
+import welcomeImage from '../../assets/images/whole.webp';
 
 const HeroSection = () => {
   // Use your original images with proper imports
@@ -17,19 +23,41 @@ const HeroSection = () => {
     hero2Image,
     hero3Image,
     flagImage,
-    newhouseImage
+    newhouseImage,
+    volleyballImage,
+    basketballImage,
+    footballImage,
+    welcomeImage
   ];
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
-  // Auto-slide functionality with 7-second delay
+  // Navigation functions
+  const goToPrevious = () => {
+    setCurrentImageIndex(prevIndex => 
+      prevIndex === 0 ? imageRefs.length - 1 : prevIndex - 1
+    );
+    setIsAutoPlaying(false);
+  };
+
+  const goToNext = () => {
+    setCurrentImageIndex(prevIndex => 
+      (prevIndex + 1) % imageRefs.length
+    );
+    setIsAutoPlaying(false);
+  };
+
+  // Auto-slide functionality with 30-second delay
   useEffect(() => {
+    if (!isAutoPlaying) return;
+    
     const interval = setInterval(() => {
       setCurrentImageIndex(prevIndex => (prevIndex + 1) % imageRefs.length);
-    }, 7000); // Change image every 7 seconds as requested
+    }, 30000); // Change image every 30 seconds as requested
 
     return () => clearInterval(interval);
-  }, [imageRefs.length]);
+  }, [imageRefs.length, isAutoPlaying]);
 
   return (
     <Box
@@ -84,6 +112,74 @@ const HeroSection = () => {
       />
       
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
+        {/* Navigation Arrows */}
+        <IconButton
+          onClick={goToPrevious}
+          sx={{
+            position: 'absolute',
+            left: { xs: 15, sm: 25, md: 40 },
+            top: '50%',
+            transform: 'translateY(-50%)',
+            width: { xs: 50, sm: 60, md: 70 },
+            height: { xs: 50, sm: 60, md: 70 },
+            backgroundColor: 'rgba(255, 255, 255, 0.15)',
+            backdropFilter: 'blur(12px)',
+            color: 'white',
+            zIndex: 3,
+            borderRadius: '50%',
+            border: '2px solid rgba(255, 255, 255, 0.3)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 0.25)',
+              borderColor: 'rgba(255, 255, 255, 0.6)',
+              transform: 'translateY(-50%) scale(1.15)',
+              boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4)',
+            },
+            '&:active': {
+              transform: 'translateY(-50%) scale(1.05)',
+            },
+          }}
+        >
+          <ArrowBackIosIcon sx={{ 
+            fontSize: { xs: '1.5rem', sm: '1.8rem', md: '2.2rem' },
+            filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))'
+          }} />
+        </IconButton>
+
+        <IconButton
+          onClick={goToNext}
+          sx={{
+            position: 'absolute',
+            right: { xs: 15, sm: 25, md: 40 },
+            top: '50%',
+            transform: 'translateY(-50%)',
+            width: { xs: 50, sm: 60, md: 70 },
+            height: { xs: 50, sm: 60, md: 70 },
+            backgroundColor: 'rgba(255, 255, 255, 0.15)',
+            backdropFilter: 'blur(12px)',
+            color: 'white',
+            zIndex: 3,
+            borderRadius: '50%',
+            border: '2px solid rgba(255, 255, 255, 0.3)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 0.25)',
+              borderColor: 'rgba(255, 255, 255, 0.6)',
+              transform: 'translateY(-50%) scale(1.15)',
+              boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4)',
+            },
+            '&:active': {
+              transform: 'translateY(-50%) scale(1.05)',
+            },
+          }}
+        >
+          <ArrowForwardIosIcon sx={{ 
+            fontSize: { xs: '1.5rem', sm: '1.8rem', md: '2.2rem' },
+            filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))'
+          }} />
+        </IconButton>
         <Grid container spacing={3} alignItems="center" justifyContent="center">
           <Grid item xs={12} md={8} sx={{ textAlign: 'center' }}>
             <motion.div
@@ -95,36 +191,51 @@ const HeroSection = () => {
                 variant="h1"
                 component="h1"
                 sx={{
-                  fontSize: { xs: '1.4rem', sm: '1.8rem', md: '2.2rem', lg: '2.8rem' },
-                  fontWeight: 600,
+                  fontSize: { xs: '2rem', sm: '2.8rem', md: '3.5rem', lg: '4.2rem' },
+                  fontWeight: 700,
                   color: 'white',
-                  lineHeight: 1.3,
+                  lineHeight: 1.2,
                   mb: { xs: 2, md: 3 },
-                  textShadow: '2px 2px 4px rgba(0,0,0,0.6)',
+                  textShadow: '3px 3px 6px rgba(0,0,0,0.7)',
                   textAlign: 'center',
+                  letterSpacing: { xs: '1px', sm: '2px', md: '3px' },
                 }}
               >
-                Empowering technicians,{' '}
                 <Box
                   component="span"
                   sx={{
-                    color: '#e74c3c',
-                    textShadow: '2px 2px 4px rgba(0,0,0,0.6)',
+                    background: 'linear-gradient(90deg, #00A1DE 0%, #FAD201 25%, #00A651 50%, #00A1DE 75%, #FAD201 100%)',
+                    backgroundSize: '400% 100%',
+                    backgroundClip: 'text',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    animation: 'waterFlow 6s ease-in-out infinite',
+                    '@keyframes waterFlow': {
+                      '0%': { backgroundPosition: '0% 50%' },
+                      '100%': { backgroundPosition: '100% 50%' },
+                    },
+                    position: 'relative',
+                    display: 'inline-block',
+                    '&::after': {
+                      content: '""',
+                      position: 'absolute',
+                      bottom: -4,
+                      left: '10%',
+                      width: '80%',
+                      height: '3px',
+                      background: 'linear-gradient(90deg, #00A1DE, #FAD201, #00A651, #00A1DE, #FAD201)',
+                      backgroundSize: '400% 100%',
+                      animation: 'underlineFlow 6s ease-in-out infinite',
+                      '@keyframes underlineFlow': {
+                        '0%': { backgroundPosition: '100% 50%' },
+                        '100%': { backgroundPosition: '0% 50%' },
+                      },
+                      borderRadius: '2px',
+                    }
                   }}
                 >
-                  innovators
-                </Box>{' '}
-                and{' '}
-                <Box
-                  component="span"
-                  sx={{
-                    color: '#3498db',
-                    textShadow: '2px 2px 4px rgba(0,0,0,0.6)',
-                  }}
-                >
-                  leaders
-                </Box>{' '}
-                for tomorrow
+                  WELCOME TO NYANZA TSS
+                </Box>
               </Typography>
               
               <Typography
@@ -140,7 +251,7 @@ const HeroSection = () => {
                   mx: 'auto',
                 }}
               >
-                Shaping the future through quality technical education and hands-on learning experiences
+                Empowered in Building the Future accredited in better practical hands-on skills
               </Typography>
               
               <Box sx={{ display: 'flex', gap: { xs: 1, sm: 2 }, flexWrap: 'wrap', justifyContent: 'center', mt: 2 }}>

@@ -12,6 +12,7 @@ import Programs from './pages/Programs';
 import News from './pages/News';
 import Gallery from './pages/Gallery';
 import Contact from './pages/Contact';
+import CoCurricular from './pages/CoCurricular';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import AddProgram from './pages/AddProgram';
@@ -53,6 +54,7 @@ function App() {
                 <Route path="/about" element={<About />} />
                 <Route path="/leaders" element={<Leaders />} />
                 <Route path="/programs" element={<Programs />} />
+                <Route path="/co-curricular" element={<CoCurricular />} />
                 <Route path="/news" element={<News />} />
                 <Route path="/gallery" element={<Gallery />} />
                 <Route path="/contact" element={<Contact />} />

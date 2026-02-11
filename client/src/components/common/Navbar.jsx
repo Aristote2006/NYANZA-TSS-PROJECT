@@ -43,6 +43,7 @@ const Navbar = () => {
     { name: 'About', path: '/about' },
     { name: 'Leaders', path: '/leaders' },
     { name: 'Programs', path: '/programs' },
+    { name: 'Co-Curricular', path: '/co-curricular' },
     { name: 'News', path: '/news' },
     { name: 'Gallery', path: '/gallery' },
     { name: 'Contact', path: '/contact' },
@@ -159,6 +160,28 @@ const Navbar = () => {
                     </Typography>
                   </MenuItem>
                 ))}
+                {/* Admin Portal in mobile menu */}
+                <MenuItem 
+                  onClick={handleCloseNavMenu}
+                  sx={{ 
+                    '&:hover': { 
+                      backgroundColor: 'secondary.light',
+                      color: 'white'
+                    } 
+                  }}
+                >
+                  <Typography textAlign="center" color="secondary.main">
+                    <Link 
+                      to="/admin-login" 
+                      style={{ 
+                        textDecoration: 'none', 
+                        color: 'inherit' 
+                      }}
+                    >
+                      Admin Portal
+                    </Link>
+                  </Typography>
+                </MenuItem>
               </Menu>
             </Box>
 
@@ -238,8 +261,8 @@ const Navbar = () => {
                   sx={{
                     backgroundColor: 'secondary.main',
                     color: 'white',
-                    px: 2,
-                    py: 0.5,
+                    px: { xs: 1.5, sm: 2 },
+                    py: { xs: 0.4, sm: 0.5 },
                     fontWeight: 600,
                     borderRadius: 2,
                     boxShadow: '0 4px 12px rgba(231, 76, 60, 0.3)',
@@ -247,10 +270,26 @@ const Navbar = () => {
                       backgroundColor: 'secondary.dark',
                       boxShadow: '0 6px 16px rgba(231, 76, 60, 0.4)',
                     },
-                    fontSize: '0.85rem'
+                    fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                    minWidth: { xs: 'auto', sm: 'auto' },
                   }}
                 >
-                  Admin Portal
+                  <Typography
+                    sx={{
+                      display: { xs: 'none', sm: 'block' },
+                      fontSize: 'inherit'
+                    }}
+                  >
+                    Admin Portal
+                  </Typography>
+                  <Typography
+                    sx={{
+                      display: { xs: 'block', sm: 'none' },
+                      fontSize: '0.7rem'
+                    }}
+                  >
+                    Admin
+                  </Typography>
                 </Button>
               </motion.div>
             </Box>
