@@ -19,11 +19,31 @@ if (process.env.NODE_ENV === 'production') {
 const allowedOrigins = [
   'http://localhost:3000', 
   'http://localhost:3001',
-  process.env.CLIENT_URL
+  process.env.CLIENT_URL,
+  process.env.FRONTEND_URL
 ].filter(Boolean); // Remove undefined values
 
 const corsOptions = {
-  origin: allowedOrigins,
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Allow requests from allowed origins
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    
+    // For production, you might want to be more restrictive
+    if (process.env.NODE_ENV === 'production') {
+      // Check if the origin ends with .onrender.com (for Render deployments)
+      if (origin && (origin.includes('.onrender.com') || origin.includes('localhost'))) {
+        return callback(null, true);
+      }
+    }
+    
+    // Otherwise, reject the request
+    callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
   optionsSuccessStatus: 200
 };
