@@ -27,7 +27,7 @@ const Programs = () => {
       description: 'Production of multimedia content for various platforms and industries.',
       duration: '3 Years',
       requirements: 'Being passionate about Camera operation, videos editing and sound editing',
-      image: '/assets/images/multimedia.jpg'
+      image: '/assets/images/MUP.jpeg'
     },
     {
       id: 4,
@@ -178,6 +178,8 @@ const Programs = () => {
                       height: { xs: 220, sm: 250, md: 280 },
                       objectFit: 'cover',
                       objectPosition: 'center',
+                      imageRendering: 'auto',
+                      filter: 'none',
                     }}
                     onError={(e) => {
                       e.target.onerror = null;

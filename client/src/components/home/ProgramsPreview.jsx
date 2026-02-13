@@ -29,7 +29,7 @@ const ProgramsPreview = () => {
       description: 'Production of multimedia content for various platforms and industries.',
       duration: '3 Years',
       requirements: 'Being passionate about Camera operation, videos editing and sound editing',
-      image: '/assets/images/multimedia.jpg'
+      image: '/assets/images/MUP.jpeg'
     }
   ];
 
