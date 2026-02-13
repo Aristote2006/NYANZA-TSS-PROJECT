@@ -12,7 +12,7 @@ const LeadersPreview = () => {
       name: 'Eng. Ngabonziza Germain',
       position: 'School Manager',
       phone: '+250 788 309 436',
-      qualification: 'BSc in Engineering, MBA',
+      qualification: 'Masters in Mechanical and Production Engineering',
       image: '/assets/images/manager.jpg'
     },
     {
@@ -20,7 +20,7 @@ const LeadersPreview = () => {
       name: 'Twagirayezu Pacifique',
       position: 'Deputy School Manager in Charge of Studies (DOS)',
       phone: '+250 788 718 711',
-      qualification: 'Master of Education, BSc in Mathematics',
+      qualification: 'Bachelor in Computer Engineering',
       image: '/assets/images/dos.jpg'
     },
     {
@@ -28,7 +28,7 @@ const LeadersPreview = () => {
       name: 'Harerimana Jean Damascène',
       position: 'Deputy Officer in Charge of Discipline (DOD)',
       phone: '+250 788 503 309',
-      qualification: 'Bachelor of Science in Education',
+      qualification: 'Bachelor in Social Sciences',
       image: '/assets/images/prefet.jpg'
     }
   ];

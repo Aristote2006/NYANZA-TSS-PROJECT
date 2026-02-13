@@ -58,16 +58,37 @@ const Leaders = () => {
       name: 'TUYISHIME Ange Kizito',
       position: 'Dean of Teachers',
       phone: '+250 788 253 932',
-      qualification: 'Master of Arts in Education, PGDE',
-      image: '/assets/images/staffteam.jpg'
+      qualification: 'Bachelor in Civil Engineering',
+      image: '/assets/images/HEAD TEACHER.jpg.jpeg'
     },
     {
       id: 8,
-      name: 'Eng. AHIMANA Jean Marie Vianney',
-      position: 'Head of ICT Department',
-      phone: '+250 788 804 059',
-      qualification: 'Masters in Software Engineering',
-      image: '/assets/images/computer.jpg'
+      name: 'KANKINDI Amina',
+      position: 'Dean of Teachers(Women)',
+      phone: '+250 781 139 687',
+      qualification: 'Bachelor in Automobile Technology',
+      image: '/assets/images/AMINA1.jpg.jpeg'
+    },
+    {
+      id: 9,
+      name: 'MUKASHYAKA Collette',
+      position: 'Metron/Animatrice',
+      phone: '+250 783 572 642',
+      image: '/assets/images/METRON.jpg.jpeg'
+    },
+    {
+      id: 10,
+      name: 'AKINGENEYE Clementine',
+      position: 'Metron/Animatrice',
+      phone: '+250 790 678 571',
+      image: '/assets/images/METRON 2.jpg.jpeg'
+    },
+    {
+      id: 11,
+      name: 'NIYONSHUTI Yves',
+      position: 'Patron/Animateur',
+      phone: '‎+250 737 830 774',
+      image: '/assets/images/PATRON 2.jpg.jpeg'
     }
   ];
 
@@ -212,34 +233,36 @@ const Leaders = () => {
                         {leader.position}
                       </Box>
                       
-                      {/* Qualification Section */}
-                      <Box
-                        sx={{
-                          backgroundColor: '#3498db',
-                          color: 'white',
-                          px: { xs: 2, sm: 2.5, md: 3 },
-                          py: { xs: 1, sm: 1.2, md: 1.5 },
-                          borderRadius: 2,
-                          fontWeight: 600,
-                          fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.8rem' },
-                          textAlign: 'center',
-                          boxShadow: '0 4px 15px rgba(52, 152, 219, 0.3)',
-                          minHeight: { xs: '2.2rem', sm: '2.4rem', md: '2.6rem' },
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        <Typography
-                          component="span"
+                      {/* Qualification Section - Hide for IDs 9, 10, 11 */}
+                      {![9, 10, 11].includes(leader.id) && (
+                        <Box
                           sx={{
-                            fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.8rem' },
+                            backgroundColor: '#3498db',
+                            color: 'white',
+                            px: { xs: 2, sm: 2.5, md: 3 },
+                            py: { xs: 1, sm: 1.2, md: 1.5 },
+                            borderRadius: 2,
                             fontWeight: 600,
+                            fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.8rem' },
+                            textAlign: 'center',
+                            boxShadow: '0 4px 15px rgba(52, 152, 219, 0.3)',
+                            minHeight: { xs: '2.2rem', sm: '2.4rem', md: '2.6rem' },
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
                           }}
                         >
-                          Qualifications: {leader.qualification}
-                        </Typography>
-                      </Box>
+                          <Typography
+                            component="span"
+                            sx={{
+                              fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.8rem' },
+                              fontWeight: 600,
+                            }}
+                          >
+                            Qualifications: {leader.qualification}
+                          </Typography>
+                        </Box>
+                      )}
                     </Box>
                     
                     <Box sx={{ 
