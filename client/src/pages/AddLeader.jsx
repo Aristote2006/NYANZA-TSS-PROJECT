@@ -9,10 +9,9 @@ import { leadersAPI } from '../services/api';
 
 const StyledCard = styled(Card)(({ theme }) => ({
   borderRadius: 16,
-  boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-  background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(250,250,250,0.9) 100%)',
-  backdropFilter: 'blur(10px)',
-  border: '1px solid rgba(255,255,255,0.2)',
+  boxShadow: '0 12px 40px rgba(0,0,0,0.15)', /* Stronger shadow for better visibility */
+  background: '#ffffff', /* Pure white background */
+  border: '1px solid rgba(0,0,0,0.1)',
 }));
 
 const AddLeader = () => {

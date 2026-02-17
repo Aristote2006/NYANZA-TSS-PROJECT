@@ -1,11 +1,26 @@
-import React, { useState } from 'react';
-import { Container, Typography, Box, TextField, Button, Card, CardContent, Grid, Alert, CircularProgress } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { 
+  Container, 
+  Typography, 
+  Box, 
+  TextField, 
+  Button, 
+  Card, 
+  CardContent, 
+  Grid, 
+  Alert, 
+  CircularProgress,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
+} from '@mui/material';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
-import SchoolIcon from '@mui/icons-material/School';
+import NewspaperIcon from '@mui/icons-material/Newspaper';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { programsAPI } from '../services/api';
+import { newsAPI } from '../services/api';
 
 const StyledCard = styled(Card)(({ theme }) => ({
   borderRadius: 16,
@@ -14,12 +29,12 @@ const StyledCard = styled(Card)(({ theme }) => ({
   border: '1px solid rgba(0,0,0,0.1)',
 }));
 
-const AddProgram = () => {
+const EditNews = () => {
+  const { id } = useParams();
   const [formData, setFormData] = useState({
     title: '',
-    duration: '',
-    description: '',
-    requirements: '',
+    content: '',
+    category: 'news',
     image: null
   });
   const [previewImage, setPreviewImage] = useState(null);
@@ -27,6 +42,37 @@ const AddProgram = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        setLoading(true);
+        const response = await newsAPI.getById(id);
+        const newsData = response.data;
+        
+        setFormData({
+          title: newsData.title || '',
+          content: newsData.content || '',
+          category: newsData.category || 'news',
+          image: null
+        });
+        
+        // Set preview image if exists
+        if (newsData.image) {
+          setPreviewImage(newsData.image);
+        }
+      } catch (err) {
+        setError('Failed to load news article');
+        console.error('Error fetching news:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchNews();
+    }
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -59,30 +105,63 @@ const AddProgram = () => {
     setError('');
     setSuccess(false);
 
+    // Validation
+    if (!formData.title.trim()) {
+      setError('News title is required');
+      setLoading(false);
+      return;
+    }
+    if (!formData.content.trim()) {
+      setError('News content is required');
+      setLoading(false);
+      return;
+    }
+
     try {
       const token = localStorage.getItem('token');
       const formDataToSend = new FormData();
       
       formDataToSend.append('title', formData.title);
-      formDataToSend.append('duration', formData.duration);
-      formDataToSend.append('description', formData.description);
-      formDataToSend.append('requirements', formData.requirements);
+      formDataToSend.append('content', formData.content);
+      formDataToSend.append('category', formData.category);
       if (formData.image) {
         formDataToSend.append('image', formData.image);
       }
 
-      await programsAPI.create(formDataToSend, token);
+      await newsAPI.update(id, formDataToSend, token);
       
       setSuccess(true);
       setTimeout(() => {
-        navigate('/admin-programs');
+        navigate('/admin-news');
       }, 2000);
     } catch (err) {
-      setError(err.response?.data?.msg || 'Failed to add program');
+      setError(err.response?.data?.msg || 'Failed to update news article');
     } finally {
       setLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <Container maxWidth="md" sx={{ py: 4 }}>
+        <Box
+          sx={{
+            minHeight: 300,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'rgba(255,255,255,0.1)',
+            borderRadius: 4,
+            backdropFilter: 'blur(10px)'
+          }}
+        >
+          <Typography variant="h6" color="text.secondary">
+            Loading news article...
+          </Typography>
+        </Box>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
@@ -111,7 +190,7 @@ const AddProgram = () => {
                 boxShadow: '0 8px 20px rgba(44, 62, 80, 0.3)'
               }}
             >
-              <SchoolIcon sx={{ fontSize: 40, color: 'white' }} />
+              <NewspaperIcon sx={{ fontSize: 40, color: 'white' }} />
             </Box>
           </motion.div>
           <Typography
@@ -127,10 +206,10 @@ const AddProgram = () => {
               WebkitTextFillColor: 'transparent',
             }}
           >
-            Add New Program
+            Edit News Article
           </Typography>
           <Typography variant="h6" color="text.secondary">
-            Create a new academic program
+            Update the news article details
           </Typography>
         </Box>
 
@@ -142,7 +221,7 @@ const AddProgram = () => {
 
         {success && (
           <Alert severity="success" sx={{ mb: 3, borderRadius: 2 }}>
-            Program added successfully! Redirecting...
+            News article updated successfully! Redirecting...
           </Alert>
         )}
 
@@ -153,7 +232,7 @@ const AddProgram = () => {
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Program Title"
+                    label="News Title"
                     name="title"
                     value={formData.title}
                     onChange={handleChange}
@@ -163,46 +242,35 @@ const AddProgram = () => {
                   />
                 </Grid>
 
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    label="Program Duration"
-                    name="duration"
-                    value={formData.duration}
-                    onChange={handleChange}
-                    required
-                    placeholder="e.g., 4 years, 2 semesters"
-                    variant="outlined"
-                    sx={{ borderRadius: 2 }}
-                  />
+                <Grid item xs={12}>
+                  <FormControl fullWidth variant="outlined" sx={{ borderRadius: 2 }}>
+                    <InputLabel>Category</InputLabel>
+                    <Select
+                      name="category"
+                      value={formData.category}
+                      onChange={handleChange}
+                      label="Category"
+                      sx={{ borderRadius: 2 }}
+                    >
+                      <MenuItem value="news">News</MenuItem>
+                      <MenuItem value="announcement">Announcement</MenuItem>
+                      <MenuItem value="event">Event</MenuItem>
+                      <MenuItem value="achievement">Achievement</MenuItem>
+                    </Select>
+                  </FormControl>
                 </Grid>
 
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Small Description"
-                    name="description"
-                    value={formData.description}
+                    label="News Content"
+                    name="content"
+                    value={formData.content}
                     onChange={handleChange}
                     required
                     multiline
-                    rows={3}
-                    variant="outlined"
-                    sx={{ borderRadius: 2 }}
-                  />
-                </Grid>
-
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Requirements"
-                    name="requirements"
-                    value={formData.requirements}
-                    onChange={handleChange}
-                    required
-                    multiline
-                    rows={4}
-                    placeholder="List the requirements for this program..."
+                    rows={6}
+                    placeholder="Write the news article content here..."
                     variant="outlined"
                     sx={{ borderRadius: 2 }}
                   />
@@ -222,9 +290,13 @@ const AddProgram = () => {
                         alt="Preview" 
                         style={{ 
                           maxWidth: '100%', 
-                          maxHeight: '200px', 
+                          maxHeight: '300px',
+                          width: 'auto',
+                          height: 'auto',
                           borderRadius: '8px',
-                          marginBottom: '16px'
+                          marginBottom: '16px',
+                          objectFit: 'contain',
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
                         }} 
                       />
                     ) : (
@@ -248,12 +320,15 @@ const AddProgram = () => {
                           color: 'primary.main'
                         }}
                       >
-                        {previewImage ? 'Change Image' : 'Upload Program Image'}
+                        {previewImage ? 'Change Image' : 'Upload News Image'}
                       </Button>
                     </label>
+                    <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
+                      {previewImage ? 'Click to change the image' : 'Upload an image for this news article (optional)'}
+                    </Typography>
                     {previewImage && (
-                      <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
-                        Click to change the image
+                      <Typography variant="caption" sx={{ mt: 1, display: 'block', color: 'text.secondary' }}>
+                        Image will be displayed with high quality on the news page
                       </Typography>
                     )}
                   </Box>
@@ -275,11 +350,11 @@ const AddProgram = () => {
                         borderRadius: 2
                       }}
                     >
-                      {loading ? <CircularProgress size={24} sx={{ color: 'white' }} /> : 'Add Program'}
+                      {loading ? <CircularProgress size={24} sx={{ color: 'white' }} /> : 'Update News'}
                     </Button>
                     <Button
                       variant="outlined"
-                      onClick={() => navigate('/admin-programs')}
+                      onClick={() => navigate('/admin-news')}
                       sx={{
                         flex: 1,
                         py: 1.5,
@@ -301,4 +376,4 @@ const AddProgram = () => {
   );
 };
 
-export default AddProgram;
+export default EditNews;

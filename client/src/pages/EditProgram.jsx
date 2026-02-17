@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Typography, Box, TextField, Button, Card, CardContent, Grid, Alert, CircularProgress } from '@mui/material';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import SchoolIcon from '@mui/icons-material/School';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -14,11 +14,12 @@ const StyledCard = styled(Card)(({ theme }) => ({
   border: '1px solid rgba(0,0,0,0.1)',
 }));
 
-const AddProgram = () => {
+const EditProgram = () => {
+  const { id } = useParams();
   const [formData, setFormData] = useState({
-    title: '',
-    duration: '',
+    name: '',
     description: '',
+    duration: '',
     requirements: '',
     image: null
   });
@@ -26,7 +27,37 @@ const AddProgram = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const navigate = useNavigate();
+
+  // Fetch existing program data
+  useEffect(() => {
+    const fetchProgram = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await programsAPI.getById(id, token);
+        const programData = response.data;
+        
+        setFormData({
+          name: programData.name || '',
+          description: programData.description || '',
+          duration: programData.duration || '',
+          requirements: programData.requirements || '',
+          image: null
+        });
+        
+        if (programData.imageUrl) {
+          setPreviewImage(programData.imageUrl);
+        }
+      } catch (err) {
+        setError(err.response?.data?.msg || 'Failed to fetch program data');
+      } finally {
+        setInitialLoading(false);
+      }
+    };
+
+    fetchProgram();
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,26 +94,48 @@ const AddProgram = () => {
       const token = localStorage.getItem('token');
       const formDataToSend = new FormData();
       
-      formDataToSend.append('title', formData.title);
-      formDataToSend.append('duration', formData.duration);
+      formDataToSend.append('name', formData.name);
       formDataToSend.append('description', formData.description);
+      formDataToSend.append('duration', formData.duration);
       formDataToSend.append('requirements', formData.requirements);
       if (formData.image) {
         formDataToSend.append('image', formData.image);
       }
 
-      await programsAPI.create(formDataToSend, token);
+      await programsAPI.update(id, formDataToSend, token);
       
       setSuccess(true);
       setTimeout(() => {
         navigate('/admin-programs');
       }, 2000);
     } catch (err) {
-      setError(err.response?.data?.msg || 'Failed to add program');
+      setError(err.response?.data?.msg || 'Failed to update program');
     } finally {
       setLoading(false);
     }
   };
+
+  if (initialLoading) {
+    return (
+      <Container maxWidth="md" sx={{ py: 4 }}>
+        <Box
+          sx={{
+            minHeight: 300,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'rgba(255,255,255,0.1)',
+            borderRadius: 4,
+            backdropFilter: 'blur(10px)'
+          }}
+        >
+          <Typography variant="h6" color="text.secondary">
+            Loading program data...
+          </Typography>
+        </Box>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
@@ -127,10 +180,10 @@ const AddProgram = () => {
               WebkitTextFillColor: 'transparent',
             }}
           >
-            Add New Program
+            Edit Program
           </Typography>
           <Typography variant="h6" color="text.secondary">
-            Create a new academic program
+            Update the program details
           </Typography>
         </Box>
 
@@ -142,7 +195,7 @@ const AddProgram = () => {
 
         {success && (
           <Alert severity="success" sx={{ mb: 3, borderRadius: 2 }}>
-            Program added successfully! Redirecting...
+            Program updated successfully! Redirecting...
           </Alert>
         )}
 
@@ -153,25 +206,11 @@ const AddProgram = () => {
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Program Title"
-                    name="title"
-                    value={formData.title}
+                    label="Program Name"
+                    name="name"
+                    value={formData.name}
                     onChange={handleChange}
                     required
-                    variant="outlined"
-                    sx={{ borderRadius: 2 }}
-                  />
-                </Grid>
-
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    label="Program Duration"
-                    name="duration"
-                    value={formData.duration}
-                    onChange={handleChange}
-                    required
-                    placeholder="e.g., 4 years, 2 semesters"
                     variant="outlined"
                     sx={{ borderRadius: 2 }}
                   />
@@ -180,7 +219,7 @@ const AddProgram = () => {
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Small Description"
+                    label="Description"
                     name="description"
                     value={formData.description}
                     onChange={handleChange}
@@ -192,18 +231,28 @@ const AddProgram = () => {
                   />
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Duration"
+                    name="duration"
+                    value={formData.duration}
+                    onChange={handleChange}
+                    variant="outlined"
+                    placeholder="e.g., 3 Years, 4 Semesters"
+                    sx={{ borderRadius: 2 }}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
                     label="Requirements"
                     name="requirements"
                     value={formData.requirements}
                     onChange={handleChange}
-                    required
-                    multiline
-                    rows={4}
-                    placeholder="List the requirements for this program..."
                     variant="outlined"
+                    placeholder="e.g., High school diploma"
                     sx={{ borderRadius: 2 }}
                   />
                 </Grid>
@@ -275,7 +324,7 @@ const AddProgram = () => {
                         borderRadius: 2
                       }}
                     >
-                      {loading ? <CircularProgress size={24} sx={{ color: 'white' }} /> : 'Add Program'}
+                      {loading ? <CircularProgress size={24} sx={{ color: 'white' }} /> : 'Update Program'}
                     </Button>
                     <Button
                       variant="outlined"
@@ -301,4 +350,4 @@ const AddProgram = () => {
   );
 };
 
-export default AddProgram;
+export default EditProgram;

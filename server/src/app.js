@@ -19,10 +19,12 @@ if (process.env.NODE_ENV === 'production') {
 const allowedOrigins = [
   'http://localhost:3000', 
   'http://localhost:3001',
+  'https://nyanzatss.onrender.com',
   process.env.CLIENT_URL,
   process.env.FRONTEND_URL
 ].filter(Boolean); // Remove undefined values
 
+// Enhanced CORS configuration
 const corsOptions = {
   origin: function(origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
@@ -33,7 +35,7 @@ const corsOptions = {
       return callback(null, true);
     }
     
-    // For production, you might want to be more restrictive
+    // For production, be more flexible with Render deployments
     if (process.env.NODE_ENV === 'production') {
       // Check if the origin ends with .onrender.com (for Render deployments)
       if (origin && (origin.includes('.onrender.com') || origin.includes('localhost'))) {
@@ -41,13 +43,23 @@ const corsOptions = {
       }
     }
     
+    // Log the blocked origin for debugging
+    console.log('Blocked CORS origin:', origin);
+    console.log('Allowed origins:', allowedOrigins);
+    
     // Otherwise, reject the request
     callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization', 'x-auth-token']
 };
+
 app.use(cors(corsOptions));
+
+// Handle preflight requests explicitly
+app.options('*', cors(corsOptions));
 
 // Serve static files from uploads directory
 app.use('/uploads', express.static('uploads'));

@@ -5,6 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import theme from './theme/theme';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
+import AdminLayout from './components/admin/AdminLayout';
 import Home from './pages/Home';
 import About from './pages/About';
 import Leaders from './pages/Leaders';
@@ -15,9 +16,15 @@ import Contact from './pages/Contact';
 import CoCurricular from './pages/CoCurricular';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
+import AdminNews from './pages/AdminNews';
+import AdminLeaders from './pages/AdminLeaders';
+import AdminPrograms from './pages/AdminPrograms';
 import AddProgram from './pages/AddProgram';
 import AddLeader from './pages/AddLeader';
 import AddNews from './pages/AddNews';
+import EditNews from './pages/EditNews';
+import EditLeader from './pages/EditLeader';
+import EditProgram from './pages/EditProgram';
 import TestPage from './pages/TestPage';
 
 // Test environment variables
@@ -29,20 +36,25 @@ function App() {
       <CssBaseline />
       <Router>
         <Routes>
-          {/* Admin Routes - No Navbar/Footer */}
+          {/* Admin Routes - With Admin Layout */}
           <Route path="/admin-login" element={<AdminLogin />} />
-          <Route path="/admin-dashboard" element={<AdminDashboard />} />
-          <Route path="/admin-programs" element={<div>Programs Management Page</div>} />
-          <Route path="/admin-programs/add" element={<AddProgram />} />
-          <Route path="/admin-news" element={<div>News Management Page</div>} />
-          <Route path="/admin-news/add" element={<AddNews />} />
-          <Route path="/admin-leaders" element={<div>Leaders Management Page</div>} />
-          <Route path="/admin-leaders/add" element={<AddLeader />} />
-          <Route path="/admin-messages" element={<div>Messages Management Page</div>} />
-          <Route path="/admin-messages/responded" element={<div>Responded Messages Page</div>} />
-          <Route path="/admin-profile" element={<div>Profile Page</div>} />
-          <Route path="/admin-analytics" element={<div>Analytics Page</div>} />
-          <Route path="/admin-backup" element={<div>Backup Page</div>} />
+          <Route element={<AdminLayout />}>
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/admin-programs" element={<AdminPrograms />} />
+            <Route path="/admin-programs/add" element={<AddProgram />} />
+            <Route path="/admin-programs/edit/:id" element={<EditProgram />} />
+            <Route path="/admin-news" element={<AdminNews />} />
+            <Route path="/admin-news/add" element={<AddNews />} />
+            <Route path="/admin-news/edit/:id" element={<EditNews />} />
+            <Route path="/admin-leaders" element={<AdminLeaders />} />
+            <Route path="/admin-leaders/add" element={<AddLeader />} />
+            <Route path="/admin-leaders/edit/:id" element={<EditLeader />} />
+            <Route path="/admin-messages" element={<div>Messages Management Page</div>} />
+            <Route path="/admin-messages/responded" element={<div>Responded Messages Page</div>} />
+            <Route path="/admin-profile" element={<div>Profile Page</div>} />
+            <Route path="/admin-analytics" element={<div>Analytics Page</div>} />
+            <Route path="/admin-backup" element={<div>Backup Page</div>} />
+          </Route>
           <Route path="/test" element={<TestPage />} />
           
           {/* Public Routes - With Navbar/Footer */}

@@ -1,52 +1,67 @@
-import React from 'react';
-import { Container, Typography, Box, Grid, Card, CardContent, Chip } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { 
+  Container, 
+  Typography, 
+  Grid, 
+  Card, 
+  CardContent, 
+  Box,
+  Chip
+} from '@mui/material';
 import { motion } from 'framer-motion';
+import { newsAPI, getImageUrl } from '../services/api'; // Import the API service
 
 const News = () => {
-  const newsItems = [
-    {
-      id: 1,
-      title: 'Engineering Students Excel in National Competition',
-      excerpt: 'Our engineering students showcased exceptional skills at the national technical competition...',
-      date: 'January 15, 2026',
-      category: 'Academics'
-    },
-    {
-      id: 2,
-      title: 'New Laboratory Equipment Arrival',
-      excerpt: 'State-of-the-art equipment has arrived for our science and engineering labs...',
-      date: 'January 10, 2026',
-      category: 'Facilities'
-    },
-    {
-      id: 3,
-      title: 'Graduation Ceremony Success',
-      excerpt: 'Another successful graduation ceremony celebrating our accomplished alumni...',
-      date: 'December 28, 2025',
-      category: 'Events'
-    },
-    {
-      id: 4,
-      title: 'Industry Partnership Announced',
-      excerpt: 'Exciting partnership with leading tech companies for student internships...',
-      date: 'December 20, 2025',
-      category: 'Partnerships'
-    },
-    {
-      id: 5,
-      title: 'Sports Achievements Update',
-      excerpt: 'Our sports teams continue to excel in regional competitions...',
-      date: 'December 15, 2025',
-      category: 'Sports'
-    },
-    {
-      id: 6,
-      title: 'Alumni Network Expansion',
-      excerpt: 'Connecting with our growing network of successful graduates worldwide...',
-      date: 'December 10, 2025',
-      category: 'Community'
-    }
-  ];
+  const [newsItems, setNewsItems] = useState([]); // Start with empty array
+  const [loading, setLoading] = useState(true);
+
+  // Fetch news from the API only (no mock data)
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const response = await newsAPI.getAll();
+        console.log('API Response:', response.data); // Debug: Log API response
+        
+        // Check if API data has images
+        response.data.forEach((item, index) => {
+          console.log(`News item ${index}:`, {
+            title: item.title,
+            hasImage: !!item.image,
+            image: item.image,
+            imageUrl: item.imageUrl
+          });
+        });
+        
+        // Use only API data
+        setNewsItems(response.data);
+      } catch (error) {
+        console.error('Error fetching news:', error);
+        // Empty array if API fails
+        setNewsItems([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNews();
+  }, []);
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          minHeight: '100vh',
+          py: { xs: 4, sm: 6, md: 8 },
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'linear-gradient(135deg, #2c3e50 0%, #1a252f 100%)',
+        }}
+      >
+        <Typography variant="h6" color="white">Loading news...</Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -95,74 +110,134 @@ const News = () => {
         </motion.div>
 
         <Grid container spacing={6}>
-          {newsItems.map((news, index) => (
-            <Grid item xs={12} md={6} key={news.id}>
-              <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-              >
-                <Card
-                  sx={{
-                    height: '100%',
-                    background: 'rgba(255, 255, 255, 0.95)',
-                    backdropFilter: 'blur(10px)',
-                    borderRadius: 4,
-                    boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
-                    overflow: 'hidden',
-                    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                    '&:hover': {
-                      transform: 'translateY(-10px)',
-                      boxShadow: '0 30px 60px rgba(0,0,0,0.2)',
-                    },
-                  }}
+          {newsItems.length > 0 ? (
+            newsItems.map((news, index) => (
+              <Grid item xs={12} md={6} key={news._id}>
+                <motion.div
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
                 >
-                  <CardContent sx={{ p: 4 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-                      <Chip 
-                        label={news.category} 
-                        size="small" 
+                  <Card
+                    sx={{
+                      height: '100%',
+                      background: 'rgba(255, 255, 255, 0.95)',
+                      backdropFilter: 'blur(10px)',
+                      borderRadius: 4,
+                      boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+                      overflow: 'hidden',
+                      transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                      '&:hover': {
+                        transform: 'translateY(-10px)',
+                        boxShadow: '0 30px 60px rgba(0,0,0,0.2)',
+                      },
+                    }}
+                  >
+                    {/* News Image */}
+                    {news.image && (
+                      <Box 
                         sx={{ 
-                          backgroundColor: 'primary.light', 
-                          color: 'primary.contrastText',
-                          fontWeight: 600,
-                        }} 
-                      />
-                      <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
-                        {news.date}
+                          height: 200,
+                          overflow: 'hidden',
+                          position: 'relative'
+                        }}
+                      >
+                        <img
+                          src={getImageUrl(news.image)}
+                          alt={news.title}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover', // Maintain aspect ratio and fill container
+                            transition: 'transform 0.3s ease',
+                          }}
+                          onError={(e) => {
+                            console.log('Image failed to load:', news.image, 'Full URL:', getImageUrl(news.image)); // Debug
+                            e.target.style.display = 'none';
+                          }}
+                          onLoad={(e) => {
+                            console.log('Image loaded successfully:', news.image, 'Full URL:', getImageUrl(news.image)); // Debug
+                          }}
+                        />
+                        <Box
+                          sx={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%)',
+                            pointerEvents: 'none'
+                          }}
+                        />
+                      </Box>
+                    )}
+                    
+                    <CardContent sx={{ p: 4 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                        <Chip 
+                          label={news.category || 'News'} 
+                          size="small" 
+                          sx={{ 
+                            backgroundColor: 'primary.light', 
+                            color: 'primary.contrastText',
+                            fontWeight: 600,
+                          }} 
+                        />
+                        <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
+                          {news.publishedDate ? new Date(news.publishedDate).toLocaleDateString() : new Date(news.createdAt).toLocaleDateString()}
+                        </Typography>
+                      </Box>
+                      
+                      <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, color: 'primary.main' }}>
+                        {news.title}
                       </Typography>
-                    </Box>
-                    
-                    <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, color: 'primary.main' }}>
-                      {news.title}
-                    </Typography>
-                    
-                    <Typography variant="body2" paragraph sx={{ color: 'text.secondary', lineHeight: 1.6 }}>
-                      {news.excerpt}
-                    </Typography>
-                    
-                    <Box sx={{ mt: 2 }}>
-                      <Chip 
-                        label="Read More" 
-                        size="small" 
-                        variant="outlined"
-                        sx={{ 
-                          borderColor: 'primary.main',
-                          color: 'primary.main',
-                          fontWeight: 600,
-                          cursor: 'pointer',
-                          '&:hover': {
-                            backgroundColor: 'primary.main',
-                            color: 'white',
-                          }
-                        }} 
-                      />
-                    </Box>
-                  </CardContent>
-                </Card>
-              </motion.div>
+                      
+                      <Typography variant="body2" paragraph sx={{ color: 'text.secondary', lineHeight: 1.6 }}>
+                        {news.content?.substring(0, 150)}... {/* Display first 150 characters */}
+                      </Typography>
+                      
+                      <Box sx={{ mt: 2 }}>
+                        <Chip 
+                          label="Read More" 
+                          size="small" 
+                          variant="outlined"
+                          sx={{ 
+                            borderColor: 'primary.main',
+                            color: 'primary.main',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            '&:hover': {
+                              backgroundColor: 'primary.main',
+                              color: 'white',
+                            }
+                          }} 
+                        />
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </Grid>
+            ))
+          ) : (
+            <Grid item xs={12}>
+              <Box
+                sx={{
+                  minHeight: 300,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: 'rgba(255,255,255,0.1)',
+                  borderRadius: 4,
+                  backdropFilter: 'blur(10px)'
+                }}
+              >
+                <Typography variant="h6" color="white">
+                  No news articles available at the moment. Check back soon!
+                </Typography>
+              </Box>
             </Grid>
-          ))}
+          )}
         </Grid>
       </Container>
     </Box>

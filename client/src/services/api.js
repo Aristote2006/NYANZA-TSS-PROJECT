@@ -1,28 +1,85 @@
 import axios from 'axios';
 
-// Use environment variable for API URL
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+// Add this at the top of the file to check environment
+console.log('=== ENVIRONMENT DEBUG ===');
+console.log('process.env.NODE_ENV:', process.env.NODE_ENV);
+console.log('process.env.REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
+console.log('========================');
 
-console.log('API_BASE_URL:', API_BASE_URL);
+// Use environment variable for API URL with fallback for different environments
+const getApiUrl = () => {
+  console.log('Environment variables available:', {
+    REACT_APP_API_URL: process.env.REACT_APP_API_URL,
+    NODE_ENV: process.env.NODE_ENV
+  });
+  
+  if (process.env.NODE_ENV === 'production') {
+    // In production, use the environment variable
+    const url = process.env.REACT_APP_API_URL || 'https://nyanzatss-database.onrender.com/api';
+    console.log('Using production URL:', url);
+    return url;
+  } else {
+    // In development, use localhost as fallback
+    const url = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+    console.log('Using development URL:', url);
+    return url;
+  }
+};
 
-// Create axios instance
+const API_BASE_URL = getApiUrl();
+
+console.log('Final API_BASE_URL:', API_BASE_URL);
+console.log('NODE_ENV:', process.env.NODE_ENV);
+
+// Create axios instance with better error handling
 const api = axios.create({
   baseURL: API_BASE_URL,
+  timeout: 30000, // Increased to 30 seconds
+  headers: {
+    'Content-Type': 'application/json',
+  }
 });
 
 // Add token to headers if available
 const setAuthToken = (token) => {
   if (token) {
+    console.log('Setting auth token in headers');
     api.defaults.headers.common['x-auth-token'] = token;
+    console.log('Token set in headers:', api.defaults.headers.common['x-auth-token'] ? 'Success' : 'Failed');
   } else {
+    console.log('No token provided, removing auth header');
     delete api.defaults.headers.common['x-auth-token'];
   }
+};
+
+// Helper function to construct full image URL
+export const getImageUrl = (imagePath) => {
+  if (!imagePath) return null;
+  
+  // If it's already a full URL, return as is
+  if (imagePath.startsWith('http')) {
+    return imagePath;
+  }
+  
+  // If it's a relative path starting with /uploads, construct full URL
+  if (imagePath.startsWith('/uploads/')) {
+    const baseUrl = API_BASE_URL.replace('/api', ''); // Remove /api from base URL
+    return `${baseUrl}${imagePath}`;
+  }
+  
+  // For other cases, return as is
+  return imagePath;
 };
 
 // Add request interceptor for debugging
 api.interceptors.request.use(
   (config) => {
-    console.log('API Request:', config);
+    console.log('API Request:', {
+      url: config.url,
+      method: config.method,
+      baseURL: config.baseURL,
+      headers: config.headers
+    });
     return config;
   },
   (error) => {
@@ -34,11 +91,29 @@ api.interceptors.request.use(
 // Add response interceptor for debugging
 api.interceptors.response.use(
   (response) => {
-    console.log('API Response:', response);
+    console.log('API Response:', {
+      status: response.status,
+      statusText: response.statusText,
+      url: response.config?.url
+    });
     return response;
   },
   (error) => {
-    console.error('API Response Error:', error);
+    console.error('API Response Error:', {
+      message: error.message,
+      code: error.code,
+      status: error.response?.status,
+      url: error.config?.url,
+      baseURL: error.config?.baseURL
+    });
+    
+    // Handle network errors specifically
+    if (!error.response) {
+      console.error('Network Error - Could not connect to server');
+      console.error('Attempted URL:', error.config?.baseURL + error.config?.url);
+      // You might want to show a user-friendly message here
+    }
+    
     return Promise.reject(error);
   }
 );
@@ -57,19 +132,11 @@ export const newsAPI = {
   getById: (id) => api.get(`/news/${id}`),
   create: (newsData, token) => {
     setAuthToken(token);
-    return api.post('/news', newsData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
+    return api.post('/news', newsData);
   },
   update: (id, newsData, token) => {
     setAuthToken(token);
-    return api.put(`/news/${id}`, newsData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
+    return api.put(`/news/${id}`, newsData);
   },
   delete: (id, token) => {
     setAuthToken(token);
@@ -84,19 +151,11 @@ export const leadersAPI = {
   getById: (id) => api.get(`/leaders/${id}`),
   create: (leaderData, token) => {
     setAuthToken(token);
-    return api.post('/leaders', leaderData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
+    return api.post('/leaders', leaderData);
   },
   update: (id, leaderData, token) => {
     setAuthToken(token);
-    return api.put(`/leaders/${id}`, leaderData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
+    return api.put(`/leaders/${id}`, leaderData);
   },
   delete: (id, token) => {
     setAuthToken(token);
@@ -111,19 +170,11 @@ export const programsAPI = {
   getById: (id) => api.get(`/programs/${id}`),
   create: (programData, token) => {
     setAuthToken(token);
-    return api.post('/programs', programData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
+    return api.post('/programs', programData);
   },
   update: (id, programData, token) => {
     setAuthToken(token);
-    return api.put(`/programs/${id}`, programData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
+    return api.put(`/programs/${id}`, programData);
   },
   delete: (id, token) => {
     setAuthToken(token);
@@ -147,6 +198,33 @@ export const contactAPI = {
     return api.put(`/contact/${id}`, messageData);
   },
   delete: (id, token) => {
+    setAuthToken(token);
+    return api.delete(`/contact/${id}`);
+  },
+  markAsRead: (id, token) => {
+    setAuthToken(token);
+    return api.put(`/contact/${id}`, { status: 'in-progress' });
+  },
+  markAsReplied: (id, replyData, token) => {
+    setAuthToken(token);
+    return api.put(`/contact/${id}`, { 
+      status: 'resolved', 
+      ...replyData 
+    });
+  },
+  getAll: (token) => {
+    setAuthToken(token);
+    return api.get('/contact');
+  },
+  getById: (id, token) => {
+    setAuthToken(token);
+    return api.get(`/contact/${id}`);
+  },
+  update: (id, messageData, token) => {
+    setAuthToken(token);
+    return api.put(`/contact/${id}`, messageData);
+  },
+  deleteMessage: (id, token) => {
     setAuthToken(token);
     return api.delete(`/contact/${id}`);
   },

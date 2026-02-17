@@ -3,7 +3,6 @@ import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, Avatar, Badge,
 import { Link } from 'react-router-dom';
 import { styled, useTheme } from '@mui/material/styles';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -171,25 +170,6 @@ const AdminNavbar = ({ currentPath }) => {
             }}
           >
             <SettingsIcon />
-          </IconButton>
-
-          {/* Notifications */}
-          <IconButton
-            size="large"
-            aria-label="show notifications"
-            color="inherit"
-            sx={{
-              ml: 1,
-              background: 'rgba(255,255,255,0.1)',
-              borderRadius: 2,
-              '&:hover': {
-                background: 'rgba(255,255,255,0.2)',
-              },
-            }}
-          >
-            <Badge badgeContent={4} color="error">
-              <NotificationsIcon />
-            </Badge>
           </IconButton>
 
           {/* Profile Menu */}

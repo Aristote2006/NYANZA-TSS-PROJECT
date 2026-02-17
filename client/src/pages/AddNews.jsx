@@ -1,5 +1,20 @@
 import React, { useState } from 'react';
-import { Container, Typography, Box, TextField, Button, Card, CardContent, Grid, Alert, CircularProgress } from '@mui/material';
+import { 
+  Container, 
+  Typography, 
+  Box, 
+  TextField, 
+  Button, 
+  Card, 
+  CardContent, 
+  Grid, 
+  Alert, 
+  CircularProgress,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
+} from '@mui/material';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
@@ -9,18 +24,19 @@ import { newsAPI } from '../services/api';
 
 const StyledCard = styled(Card)(({ theme }) => ({
   borderRadius: 16,
-  boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-  background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(250,250,250,0.9) 100%)',
-  backdropFilter: 'blur(10px)',
-  border: '1px solid rgba(255,255,255,0.2)',
+  boxShadow: '0 12px 40px rgba(0,0,0,0.15)', /* Stronger shadow for better visibility */
+  background: '#ffffff', /* Pure white background */
+  border: '1px solid rgba(0,0,0,0.1)',
 }));
 
 const AddNews = () => {
   const [formData, setFormData] = useState({
     title: '',
     content: '',
+    category: 'news', // Add category field
     image: null
   });
+  
   const [previewImage, setPreviewImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -58,15 +74,36 @@ const AddNews = () => {
     setError('');
     setSuccess(false);
 
+    // Validation
+    if (!formData.title.trim()) {
+      setError('News title is required');
+      setLoading(false);
+      return;
+    }
+    if (!formData.content.trim()) {
+      setError('News content is required');
+      setLoading(false);
+      return;
+    }
+
     try {
       const token = localStorage.getItem('token');
       const formDataToSend = new FormData();
       
       formDataToSend.append('title', formData.title);
       formDataToSend.append('content', formData.content);
+      formDataToSend.append('category', formData.category); // Add category
       if (formData.image) {
+        console.log('Adding image to form data:', formData.image.name); // Debug
         formDataToSend.append('image', formData.image);
       }
+
+      console.log('Sending form data with:', {
+        title: formData.title,
+        content: formData.content,
+        category: formData.category,
+        hasImage: !!formData.image
+      });
 
       await newsAPI.create(formDataToSend, token);
       
@@ -75,7 +112,7 @@ const AddNews = () => {
         navigate('/admin-news');
       }, 2000);
     } catch (err) {
-      setError(err.response?.data?.msg || 'Failed to add news');
+      setError(err.response?.data?.msg || 'Failed to add news article');
     } finally {
       setLoading(false);
     }
@@ -161,6 +198,24 @@ const AddNews = () => {
                 </Grid>
 
                 <Grid item xs={12}>
+                  <FormControl fullWidth variant="outlined" sx={{ borderRadius: 2 }}>
+                    <InputLabel>Category</InputLabel>
+                    <Select
+                      name="category"
+                      value={formData.category}
+                      onChange={handleChange}
+                      label="Category"
+                      sx={{ borderRadius: 2 }}
+                    >
+                      <MenuItem value="news">News</MenuItem>
+                      <MenuItem value="announcement">Announcement</MenuItem>
+                      <MenuItem value="event">Event</MenuItem>
+                      <MenuItem value="achievement">Achievement</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                <Grid item xs={12}>
                   <TextField
                     fullWidth
                     label="News Content"
@@ -190,9 +245,13 @@ const AddNews = () => {
                         alt="Preview" 
                         style={{ 
                           maxWidth: '100%', 
-                          maxHeight: '200px', 
+                          maxHeight: '300px', // Increased height for better preview
+                          width: 'auto',
+                          height: 'auto',
                           borderRadius: '8px',
-                          marginBottom: '16px'
+                          marginBottom: '16px',
+                          objectFit: 'contain', // Maintain aspect ratio
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
                         }} 
                       />
                     ) : (
@@ -219,9 +278,12 @@ const AddNews = () => {
                         {previewImage ? 'Change Image' : 'Upload News Image'}
                       </Button>
                     </label>
+                    <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
+                      {previewImage ? 'Click to change the image' : 'Upload an image for this news article (optional)'}
+                    </Typography>
                     {previewImage && (
-                      <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
-                        Click to change the image
+                      <Typography variant="caption" sx={{ mt: 1, display: 'block', color: 'text.secondary' }}>
+                        Image will be displayed with high quality on the news page
                       </Typography>
                     )}
                   </Box>

@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Typography, Box, Grid, Card, CardContent, Chip } from '@mui/material';
 import { motion } from 'framer-motion';
 import logoImg from '../assets/images/logo.png';
+import { programsAPI } from '../services/api'; // Import the API service
 
 const Programs = () => {
-  const programs = [
+  // Define mock programs data
+  const mockPrograms = [
     {
       id: 1,
       name: 'Computer System and Architecture',
@@ -36,7 +38,7 @@ const Programs = () => {
       duration: '3 Years',
       requirements: 'Being passionate about automobiles and mechanics',
       image: '/assets/images/automobile.jpg'
-         },
+    },
     {
       id: 5,
       name: 'Building Construction Technology',
@@ -44,7 +46,7 @@ const Programs = () => {
       duration: '3 Years',
       requirements: 'Being passionate about construction and architecture',
       image: '/assets/images/construction.jpg'
-        },
+    },
     {
       id: 6,
       name: 'Electrical Technology',
@@ -52,7 +54,7 @@ const Programs = () => {
       duration: '3 Years',
       requirements: 'Being passionate about electricity and electronics',
       image: '/assets/images/electrical.jpg'
-        },
+    },
     {
       id: 7,
       name: 'Manufacturing Technology',
@@ -60,7 +62,7 @@ const Programs = () => {
       duration: '3 Years',
       requirements: 'Being passionate about manufacturing and Welding',
       image: '/assets/images/manufacturing.jpg'
-        },
+    },
     {
       id: 8,
       name: 'Land Survey',
@@ -68,7 +70,7 @@ const Programs = () => {
       duration: '3 Years',
       requirements: 'Being passionate about surveying and mapping',
       image: '/assets/images/landsurvey.jpg'
-        },
+    },
     {
       id: 9,
       name: 'Interior Design',
@@ -76,7 +78,7 @@ const Programs = () => {
       duration: '3 Years',
       requirements: 'Being passionate about interior design and construction',
       image: '/assets/images/mainstaff.jpg'
-        },
+    },
     {
       id: 10,
       name: 'Public Works',
@@ -84,7 +86,7 @@ const Programs = () => {
       duration: '3 Years',
       requirements: 'Being passionate about public works and infrastructure',
       image: '/assets/images/public.jpg'
-        },
+    },
     {
       id: 11,
       name: 'Wood Technology',
@@ -92,7 +94,7 @@ const Programs = () => {
       duration: '3 Years',
       requirements: 'Being passionate about woodwork and construction',
       image: '/assets/images/wood.jpg'
-        },
+    },
     {
       id: 12,
       name: 'Renewable Energy',
@@ -100,8 +102,31 @@ const Programs = () => {
       duration: '3 Years',
       requirements: 'Being passionate about renewable energy and sustainability',
       image: '/assets/images/mainstaff.jpg'
-        }
+    }
   ];
+
+  const [programs, setPrograms] = useState(mockPrograms); // Start with mock data
+  const [loading, setLoading] = useState(true);
+
+  // Fetch programs from the API and combine with mock data
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      try {
+        const response = await programsAPI.getAll();
+        // Combine mock data with API data
+        const combinedPrograms = [...mockPrograms, ...response.data];
+        setPrograms(combinedPrograms);
+      } catch (error) {
+        console.error('Error fetching programs:', error);
+        // Use only mock data if API fails
+        setPrograms(mockPrograms);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPrograms();
+  }, []);
 
   return (
     <Box
@@ -149,121 +174,140 @@ const Programs = () => {
           </Typography>
         </motion.div>
 
-        <Grid container spacing={3}>
-          {programs.map((program, index) => (
-            <Grid item xs={12} sm={6} md={6} lg={4} key={program.id}>
-              <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-              >
-                <Card
-                  sx={{
-                    height: '100%',
-                    background: 'white',
-                    borderRadius: 4,
-                    boxShadow: '0 10px 20px rgba(0,0,0,0.1)',
-                    overflow: 'hidden',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    minHeight: { xs: 500, sm: 550, md: 600 },
-                  }}
+        {loading ? (
+          <Box
+            sx={{
+              minHeight: 300,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'rgba(255,255,255,0.1)',
+              borderRadius: 4,
+              backdropFilter: 'blur(10px)'
+            }}
+          >
+            <Typography variant="h6" color="white">
+              Loading programs...
+            </Typography>
+          </Box>
+        ) : (
+          <Grid container spacing={3}>
+            {programs.map((program, index) => (
+              <Grid item xs={12} sm={6} md={6} lg={4} key={program._id || program.id}>
+                <motion.div
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
                 >
-                  <Box
-                    component="img"
-                    src={program.image}
-                    alt={program.name}
+                  <Card
                     sx={{
-                      width: '100%',
-                      height: { xs: 220, sm: 250, md: 280 },
-                      objectFit: 'cover',
-                      objectPosition: 'center',
-                      imageRendering: 'auto',
-                      filter: 'none',
+                      height: '100%',
+                      background: 'white',
+                      borderRadius: 4,
+                      boxShadow: '0 10px 20px rgba(0,0,0,0.1)',
+                      overflow: 'hidden',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      minHeight: { xs: 500, sm: 550, md: 600 },
                     }}
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = 'https://via.placeholder.com/400x150/2c3e50/FFFFFF?text=' + encodeURIComponent(program.name);
-                    }}
-                  />
-                  <CardContent sx={{ 
-                    p: { xs: 2, sm: 3, md: 4 }, 
-                    flexGrow: 1,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                  }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                      <Box sx={{ width: { xs: 40, sm: 45, md: 50 }, height: { xs: 40, sm: 45, md: 50 }, mr: { xs: 1, sm: 2 }, overflow: 'hidden', borderRadius: '50%', flexShrink: 0 }}>
-                        <img 
-                          src={logoImg} 
-                          alt="NYANZA TSS Logo"
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        />
+                  >
+                    <Box
+                      component="img"
+                      src={program.image}
+                      alt={program.name || 'Program Image'}
+                      sx={{
+                        width: '100%',
+                        height: { xs: 220, sm: 250, md: 280 },
+                        objectFit: 'cover',
+                        objectPosition: 'center',
+                        imageRendering: 'auto',
+                        filter: 'none',
+                      }}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        const programName = program.name || 'Program';
+                        e.target.src = 'https://via.placeholder.com/400x150/2c3e50/FFFFFF?text=' + encodeURIComponent(programName);
+                      }}
+                    />
+                    <CardContent sx={{ 
+                      p: { xs: 2, sm: 3, md: 4 }, 
+                      flexGrow: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                    }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                        <Box sx={{ width: { xs: 40, sm: 45, md: 50 }, height: { xs: 40, sm: 45, md: 50 }, mr: { xs: 1, sm: 2 }, overflow: 'hidden', borderRadius: '50%', flexShrink: 0 }}>
+                          <img 
+                            src={logoImg} 
+                            alt="NYANZA TSS Logo"
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          />
+                        </Box>
+                        <Typography 
+                          variant="h6" 
+                          sx={{ 
+                            fontWeight: 700, 
+                            color: 'primary.main',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            fontSize: { xs: '0.9rem', sm: '1rem', md: '1.1rem' }
+                          }}
+                        >
+                          {program.name}
+                        </Typography>
                       </Box>
+                      
                       <Typography 
-                        variant="h6" 
+                        variant="body2" 
+                        paragraph 
                         sx={{ 
-                          fontWeight: 700, 
-                          color: 'primary.main',
-                          whiteSpace: 'nowrap',
+                          color: 'text.secondary', 
+                          lineHeight: 1.6, 
+                          mb: 2,
+                          flexGrow: 1,
+                          display: '-webkit-box',
+                          WebkitLineClamp: 4,
+                          WebkitBoxOrient: 'vertical',
                           overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          fontSize: { xs: '0.9rem', sm: '1rem', md: '1.1rem' }
+                          fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.9rem' }
                         }}
                       >
-                        {program.name}
+                        {program.description}
                       </Typography>
-                    </Box>
-                    
-                    <Typography 
-                      variant="body2" 
-                      paragraph 
-                      sx={{ 
-                        color: 'text.secondary', 
-                        lineHeight: 1.6, 
-                        mb: 2,
-                        flexGrow: 1,
-                        display: '-webkit-box',
-                        WebkitLineClamp: 4,
-                        WebkitBoxOrient: 'vertical',
-                        overflow: 'hidden',
-                        fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.9rem' }
-                      }}
-                    >
-                      {program.description}
-                    </Typography>
-                    
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 1 }}>
-                      <Chip 
-                        label={program.duration} 
-                        size="small" 
-                        sx={{ 
-                          backgroundColor: 'primary.light', 
-                          color: 'primary.contrastText',
-                          fontWeight: 600,
-                          fontSize: { xs: '0.7rem', sm: '0.75rem' },
-                          flexShrink: 0,
-                        }} 
-                      />
-                      <Chip 
-                        label={program.requirements} 
-                        size="small" 
-                        sx={{ 
-                          backgroundColor: 'secondary.light', 
-                          color: 'secondary.contrastText',
-                          fontWeight: 600,
-                          fontSize: { xs: '0.7rem', sm: '0.75rem' },
-                          flexShrink: 0,
-                        }} 
-                      />
-                    </Box>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </Grid>
-          ))}
-        </Grid>
+                      
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 1 }}>
+                        <Chip 
+                          label={program.duration} 
+                          size="small" 
+                          sx={{ 
+                            backgroundColor: 'primary.light', 
+                            color: 'primary.contrastText',
+                            fontWeight: 600,
+                            fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                            flexShrink: 0,
+                          }} 
+                        />
+                        <Chip 
+                          label={program.requirements} 
+                          size="small" 
+                          sx={{ 
+                            backgroundColor: 'secondary.light', 
+                            color: 'secondary.contrastText',
+                            fontWeight: 600,
+                            fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                            flexShrink: 0,
+                          }} 
+                        />
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </Grid>
+            ))}
+          </Grid>
+        )}
       </Container>
     </Box>
   );

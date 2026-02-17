@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Typography, Box, Grid, Card, CardContent, IconButton } from '@mui/material';
 import { motion } from 'framer-motion';
 import PhoneIcon from '@mui/icons-material/Phone';
+import { leadersAPI } from '../services/api'; // Import the API service
 
 const Leaders = () => {
-  const leaders = [
+  // Define mock leaders data
+  const mockLeaders = [
     {
       id: 1,
       name: 'Eng. Ngabonziza Germain',
@@ -92,6 +94,29 @@ const Leaders = () => {
     }
   ];
 
+  const [leaders, setLeaders] = useState(mockLeaders); // Start with mock data
+  const [loading, setLoading] = useState(true);
+
+  // Fetch leaders from the API and combine with mock data
+  useEffect(() => {
+    const fetchLeaders = async () => {
+      try {
+        const response = await leadersAPI.getAll();
+        // Combine mock data with API data
+        const combinedLeaders = [...mockLeaders, ...response.data];
+        setLeaders(combinedLeaders);
+      } catch (error) {
+        console.error('Error fetching leaders:', error);
+        // Use only mock data if API fails
+        setLeaders(mockLeaders);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLeaders();
+  }, []);
+
   return (
     <Box
       sx={{
@@ -149,170 +174,189 @@ const Leaders = () => {
           </Typography>
         </motion.div>
 
-        <Grid container spacing={{ xs: 3, sm: 4, md: 4 }} sx={{ alignItems: 'stretch' }}>
-          {leaders.map((leader, index) => (
-            <Grid item xs={12} sm={6} md={4} key={leader.id}>
-              <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ y: -15 }}
-              >
-                <Card
-                  sx={{
-                    height: '100%',
-                    background: 'rgba(255, 255, 255, 0.98)',
-                    borderRadius: 3,
-                    boxShadow: '0 25px 50px rgba(0,0,0,0.15)',
-                    overflow: 'hidden',
-                    display: 'flex',
-                    flexDirection: 'column',
-                  }}
+        {loading ? (
+          <Box
+            sx={{
+              minHeight: 300,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'rgba(255,255,255,0.1)',
+              borderRadius: 4,
+              backdropFilter: 'blur(10px)'
+            }}
+          >
+            <Typography variant="h6" color="white">
+              Loading leadership team...
+            </Typography>
+          </Box>
+        ) : (
+          <Grid container spacing={{ xs: 3, sm: 4, md: 4 }} sx={{ alignItems: 'stretch' }}>
+            {leaders.map((leader, index) => (
+              <Grid item xs={12} sm={6} md={4} key={leader._id || leader.id}>
+                <motion.div
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  whileHover={{ y: -15 }}
                 >
-                  <Box
-                    component="img"
-                    src={leader.image}
-                    alt={leader.name}
+                  <Card
                     sx={{
-                      width: '100%',
-                      height: 'auto',
-                      objectFit: 'cover',
-                      objectPosition: 'center',
-                      borderBottom: '4px solid #e74c3c',
+                      height: '100%',
+                      background: 'rgba(255, 255, 255, 0.98)',
+                      borderRadius: 3,
+                      boxShadow: '0 25px 50px rgba(0,0,0,0.15)',
+                      overflow: 'hidden',
+                      display: 'flex',
+                      flexDirection: 'column',
                     }}
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = 'https://via.placeholder.com/400x300/e74c3c/FFFFFF?text=' + encodeURIComponent(leader.name);
-                    }}
-                  />
-                  
-                  <CardContent sx={{ 
-                    p: { xs: 2, sm: 2.5, md: 3 }, 
-                    flex: '0 0 auto',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                  }}>
-                    <Box sx={{ mb: 2 }}>
-                      <Typography 
-                        variant="h6" 
-                        align="center"
-                        sx={{ 
-                          fontWeight: 800, 
-                          color: '#2c3e50',
-                          fontSize: { xs: '1rem', sm: '1.1rem', md: '1.2rem' },
-                          mb: 1.5,
-                          lineHeight: 1.3,
-                          minHeight: { xs: '2.6rem', sm: '2.8rem', md: '3rem' },
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        {leader.name}
-                      </Typography>
-                      
-                      <Box
-                        sx={{
-                          backgroundColor: '#e74c3c',
-                          color: 'white',
-                          px: { xs: 2, sm: 2.5, md: 3 },
-                          py: { xs: 1, sm: 1.2, md: 1.5 },
-                          borderRadius: 2,
-                          fontWeight: 700,
-                          fontSize: { xs: '0.75rem', sm: '0.8rem', md: '0.85rem' },
-                          textAlign: 'center',
-                          boxShadow: '0 4px 15px rgba(231, 76, 60, 0.3)',
-                          minHeight: { xs: '2.2rem', sm: '2.4rem', md: '2.6rem' },
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          mb: 2,
-                        }}
-                      >
-                        {leader.position}
-                      </Box>
-                      
-                      {/* Qualification Section - Hide for IDs 9, 10, 11 */}
-                      {![9, 10, 11].includes(leader.id) && (
-                        <Box
-                          sx={{
-                            backgroundColor: '#3498db',
-                            color: 'white',
-                            px: { xs: 2, sm: 2.5, md: 3 },
-                            py: { xs: 1, sm: 1.2, md: 1.5 },
-                            borderRadius: 2,
-                            fontWeight: 600,
-                            fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.8rem' },
-                            textAlign: 'center',
-                            boxShadow: '0 4px 15px rgba(52, 152, 219, 0.3)',
-                            minHeight: { xs: '2.2rem', sm: '2.4rem', md: '2.6rem' },
+                  >
+                    <Box
+                      component="img"
+                      src={leader.image}
+                      alt={leader.name || 'Leader Image'}
+                      sx={{
+                        width: '100%',
+                        height: 'auto',
+                        objectFit: 'cover',
+                        objectPosition: 'center',
+                        borderBottom: '4px solid #e74c3c',
+                      }}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        const leaderName = leader.name || 'Leader';
+                        e.target.src = 'https://via.placeholder.com/400x300/e74c3c/FFFFFF?text=' + encodeURIComponent(leaderName);
+                      }}
+                    />
+                    
+                    <CardContent sx={{ 
+                      p: { xs: 2, sm: 2.5, md: 3 }, 
+                      flex: '0 0 auto',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                    }}>
+                      <Box sx={{ mb: 2 }}>
+                        <Typography 
+                          variant="h6" 
+                          align="center"
+                          sx={{ 
+                            fontWeight: 800, 
+                            color: '#2c3e50',
+                            fontSize: { xs: '1rem', sm: '1.1rem', md: '1.2rem' },
+                            mb: 1.5,
+                            lineHeight: 1.3,
+                            minHeight: { xs: '2.6rem', sm: '2.8rem', md: '3rem' },
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                           }}
                         >
-                          <Typography
-                            component="span"
+                          {leader.name}
+                        </Typography>
+                        
+                        <Box
+                          sx={{
+                            backgroundColor: '#e74c3c',
+                            color: 'white',
+                            px: { xs: 2, sm: 2.5, md: 3 },
+                            py: { xs: 1, sm: 1.2, md: 1.5 },
+                            borderRadius: 2,
+                            fontWeight: 700,
+                            fontSize: { xs: '0.75rem', sm: '0.8rem', md: '0.85rem' },
+                            textAlign: 'center',
+                            boxShadow: '0 4px 15px rgba(231, 76, 60, 0.3)',
+                            minHeight: { xs: '2.2rem', sm: '2.4rem', md: '2.6rem' },
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            mb: 2,
+                          }}
+                        >
+                          {leader.position}
+                        </Box>
+                        
+                        {/* Qualification Section - Hide for IDs 9, 10, 11 */}
+                        {![9, 10, 11].includes(leader.id) && (
+                          <Box
                             sx={{
-                              fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.8rem' },
+                              backgroundColor: '#3498db',
+                              color: 'white',
+                              px: { xs: 2, sm: 2.5, md: 3 },
+                              py: { xs: 1, sm: 1.2, md: 1.5 },
+                              borderRadius: 2,
                               fontWeight: 600,
+                              fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.8rem' },
+                              textAlign: 'center',
+                              boxShadow: '0 4px 15px rgba(52, 152, 219, 0.3)',
+                              minHeight: { xs: '2.2rem', sm: '2.4rem', md: '2.6rem' },
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
                             }}
                           >
-                            Qualifications: {leader.qualification}
-                          </Typography>
-                        </Box>
-                      )}
-                    </Box>
-                    
-                    <Box sx={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      justifyContent: 'center',
-                      mt: 'auto',
-                      p: { xs: 1, sm: 1.5, md: 2 },
-                      backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                      borderRadius: 2,
-                      border: '1px solid rgba(52, 152, 219, 0.2)',
-                    }}>
-                      <IconButton 
-                        size="small"
-                        sx={{ 
-                          color: '#3498db',
-                          mr: 1,
-                          p: 0.5,
-                          '&:hover': {
-                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                            transform: 'scale(1.1)',
-                          }
-                        }}
-                        onClick={() => window.location.href = `tel:${leader.phone.replace(/\s/g, '')}`}
-                      >
-                        <PhoneIcon sx={{ fontSize: { xs: '1.2rem', sm: '1.3rem', md: '1.4rem' } }} />
-                      </IconButton>
-                      <Typography 
-                        variant="body2"
-                        sx={{ 
-                          fontWeight: 600,
-                          color: '#2c3e50',
-                          fontSize: { xs: '0.85rem', sm: '0.9rem', md: '0.95rem' },
-                          cursor: 'pointer',
-                          '&:hover': {
+                            <Typography
+                              component="span"
+                              sx={{
+                                fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.8rem' },
+                                fontWeight: 600,
+                              }}
+                            >
+                              Qualifications: {leader.qualification}
+                            </Typography>
+                          </Box>
+                        )}
+                      </Box>
+                      
+                      <Box sx={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        mt: 'auto',
+                        p: { xs: 1, sm: 1.5, md: 2 },
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        borderRadius: 2,
+                        border: '1px solid rgba(52, 152, 219, 0.2)',
+                      }}>
+                        <IconButton 
+                          size="small"
+                          sx={{ 
                             color: '#3498db',
-                            textDecoration: 'underline',
-                          }
-                        }}
-                        onClick={() => window.location.href = `tel:${leader.phone.replace(/\s/g, '')}`}
-                      >
-                        {leader.phone}
-                      </Typography>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </Grid>
-          ))}
-        </Grid>
+                            mr: 1,
+                            p: 0.5,
+                            '&:hover': {
+                              backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                              transform: 'scale(1.1)',
+                            }
+                          }}
+                          onClick={() => window.location.href = `tel:${leader.phone.replace(/\s/g, '')}`}
+                        >
+                          <PhoneIcon sx={{ fontSize: { xs: '1.2rem', sm: '1.3rem', md: '1.4rem' } }} />
+                        </IconButton>
+                        <Typography 
+                          variant="body2"
+                          sx={{ 
+                            fontWeight: 600,
+                            color: '#2c3e50',
+                            fontSize: { xs: '0.85rem', sm: '0.9rem', md: '0.95rem' },
+                            cursor: 'pointer',
+                            '&:hover': {
+                              color: '#3498db',
+                              textDecoration: 'underline',
+                            }
+                          }}
+                          onClick={() => window.location.href = `tel:${leader.phone.replace(/\s/g, '')}`}
+                        >
+                          {leader.phone}
+                        </Typography>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </Grid>
+            ))}
+          </Grid>
+        )}
       </Container>
       
       {/* Achievements Section */}
@@ -401,7 +445,7 @@ const Leaders = () => {
                   background: 'linear-gradient(45deg, #3498db, #2980b9)',
                   backgroundClip: 'text',
                   WebkitBackgroundClip: 'text',
-                  WebKitTextFillColor: 'transparent',
+                  WebkitTextFillColor: 'transparent',
                 }}
               >
                 5000+
@@ -440,7 +484,7 @@ const Leaders = () => {
                   background: 'linear-gradient(45deg, #e74c3c, #c0392b)',
                   backgroundClip: 'text',
                   WebkitBackgroundClip: 'text',
-                  WebKitTextFillColor: 'transparent',
+                  WebkitTextFillColor: 'transparent',
                 }}
               >
                 15+

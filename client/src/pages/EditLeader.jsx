@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Typography, Box, TextField, Button, Card, CardContent, Grid, Alert, CircularProgress } from '@mui/material';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
-import SchoolIcon from '@mui/icons-material/School';
+import PeopleIcon from '@mui/icons-material/People';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { programsAPI } from '../services/api';
+import { leadersAPI } from '../services/api';
 
 const StyledCard = styled(Card)(({ theme }) => ({
   borderRadius: 16,
@@ -14,19 +14,54 @@ const StyledCard = styled(Card)(({ theme }) => ({
   border: '1px solid rgba(0,0,0,0.1)',
 }));
 
-const AddProgram = () => {
+const EditLeader = () => {
+  const { id } = useParams();
   const [formData, setFormData] = useState({
-    title: '',
-    duration: '',
-    description: '',
-    requirements: '',
+    name: '',
+    position: '',
+    department: '',
+    email: '',
+    phone: '',
+    qualification: '',
     image: null
   });
   const [previewImage, setPreviewImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const navigate = useNavigate();
+
+  // Fetch existing leader data
+  useEffect(() => {
+    const fetchLeader = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await leadersAPI.getById(id, token);
+        const leaderData = response.data;
+        
+        setFormData({
+          name: leaderData.name || '',
+          position: leaderData.position || '',
+          department: leaderData.department || leaderData.role || '',
+          email: leaderData.email || '',
+          phone: leaderData.phone || '',
+          qualification: leaderData.qualification || '',
+          image: null
+        });
+        
+        if (leaderData.imageUrl) {
+          setPreviewImage(leaderData.imageUrl);
+        }
+      } catch (err) {
+        setError(err.response?.data?.msg || 'Failed to fetch leader data');
+      } finally {
+        setInitialLoading(false);
+      }
+    };
+
+    fetchLeader();
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,26 +98,50 @@ const AddProgram = () => {
       const token = localStorage.getItem('token');
       const formDataToSend = new FormData();
       
-      formDataToSend.append('title', formData.title);
-      formDataToSend.append('duration', formData.duration);
-      formDataToSend.append('description', formData.description);
-      formDataToSend.append('requirements', formData.requirements);
+      formDataToSend.append('name', formData.name);
+      formDataToSend.append('position', formData.position);
+      formDataToSend.append('department', formData.department);
+      formDataToSend.append('email', formData.email);
+      formDataToSend.append('phone', formData.phone);
+      formDataToSend.append('qualification', formData.qualification);
       if (formData.image) {
         formDataToSend.append('image', formData.image);
       }
 
-      await programsAPI.create(formDataToSend, token);
+      await leadersAPI.update(id, formDataToSend, token);
       
       setSuccess(true);
       setTimeout(() => {
-        navigate('/admin-programs');
+        navigate('/admin-leaders');
       }, 2000);
     } catch (err) {
-      setError(err.response?.data?.msg || 'Failed to add program');
+      setError(err.response?.data?.msg || 'Failed to update leader');
     } finally {
       setLoading(false);
     }
   };
+
+  if (initialLoading) {
+    return (
+      <Container maxWidth="md" sx={{ py: 4 }}>
+        <Box
+          sx={{
+            minHeight: 300,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'rgba(255,255,255,0.1)',
+            borderRadius: 4,
+            backdropFilter: 'blur(10px)'
+          }}
+        >
+          <Typography variant="h6" color="text.secondary">
+            Loading leader data...
+          </Typography>
+        </Box>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
@@ -111,7 +170,7 @@ const AddProgram = () => {
                 boxShadow: '0 8px 20px rgba(44, 62, 80, 0.3)'
               }}
             >
-              <SchoolIcon sx={{ fontSize: 40, color: 'white' }} />
+              <PeopleIcon sx={{ fontSize: 40, color: 'white' }} />
             </Box>
           </motion.div>
           <Typography
@@ -127,10 +186,10 @@ const AddProgram = () => {
               WebkitTextFillColor: 'transparent',
             }}
           >
-            Add New Program
+            Edit Leader
           </Typography>
           <Typography variant="h6" color="text.secondary">
-            Create a new academic program
+            Update the leader's details
           </Typography>
         </Box>
 
@@ -142,7 +201,7 @@ const AddProgram = () => {
 
         {success && (
           <Alert severity="success" sx={{ mb: 3, borderRadius: 2 }}>
-            Program added successfully! Redirecting...
+            Leader updated successfully! Redirecting...
           </Alert>
         )}
 
@@ -150,12 +209,12 @@ const AddProgram = () => {
           <CardContent sx={{ p: 4 }}>
             <form onSubmit={handleSubmit}>
               <Grid container spacing={3}>
-                <Grid item xs={12}>
+                <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
-                    label="Program Title"
-                    name="title"
-                    value={formData.title}
+                    label="Full Name"
+                    name="name"
+                    value={formData.name}
                     onChange={handleChange}
                     required
                     variant="outlined"
@@ -163,46 +222,63 @@ const AddProgram = () => {
                   />
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
-                    label="Program Duration"
-                    name="duration"
-                    value={formData.duration}
+                    label="Position"
+                    name="position"
+                    value={formData.position}
                     onChange={handleChange}
                     required
-                    placeholder="e.g., 4 years, 2 semesters"
                     variant="outlined"
                     sx={{ borderRadius: 2 }}
                   />
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
-                    label="Small Description"
-                    name="description"
-                    value={formData.description}
+                    label="Department/Role"
+                    name="department"
+                    value={formData.department}
                     onChange={handleChange}
-                    required
-                    multiline
-                    rows={3}
                     variant="outlined"
                     sx={{ borderRadius: 2 }}
                   />
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
-                    label="Requirements"
-                    name="requirements"
-                    value={formData.requirements}
+                    label="Email"
+                    name="email"
+                    type="email"
+                    value={formData.email}
                     onChange={handleChange}
-                    required
-                    multiline
-                    rows={4}
-                    placeholder="List the requirements for this program..."
+                    variant="outlined"
+                    sx={{ borderRadius: 2 }}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Phone Number"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    variant="outlined"
+                    sx={{ borderRadius: 2 }}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Qualification"
+                    name="qualification"
+                    value={formData.qualification}
+                    onChange={handleChange}
                     variant="outlined"
                     sx={{ borderRadius: 2 }}
                   />
@@ -248,12 +324,12 @@ const AddProgram = () => {
                           color: 'primary.main'
                         }}
                       >
-                        {previewImage ? 'Change Image' : 'Upload Program Image'}
+                        {previewImage ? 'Change Photo' : 'Upload Leader Photo'}
                       </Button>
                     </label>
                     {previewImage && (
                       <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
-                        Click to change the image
+                        Click to change the photo
                       </Typography>
                     )}
                   </Box>
@@ -275,11 +351,11 @@ const AddProgram = () => {
                         borderRadius: 2
                       }}
                     >
-                      {loading ? <CircularProgress size={24} sx={{ color: 'white' }} /> : 'Add Program'}
+                      {loading ? <CircularProgress size={24} sx={{ color: 'white' }} /> : 'Update Leader'}
                     </Button>
                     <Button
                       variant="outlined"
-                      onClick={() => navigate('/admin-programs')}
+                      onClick={() => navigate('/admin-leaders')}
                       sx={{
                         flex: 1,
                         py: 1.5,
@@ -301,4 +377,4 @@ const AddProgram = () => {
   );
 };
 
-export default AddProgram;
+export default EditLeader;
