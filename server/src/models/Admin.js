@@ -22,6 +22,23 @@ const adminSchema = new mongoose.Schema({
     type: String,
     default: 'admin',
   },
+  phone: {
+    type: String,
+    trim: true,
+  },
+  position: {
+    type: String,
+    trim: true,
+    default: 'System Administrator',
+  },
+  department: {
+    type: String,
+    trim: true,
+    default: 'IT Department',
+  },
+  avatar: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

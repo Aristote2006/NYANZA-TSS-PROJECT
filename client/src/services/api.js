@@ -212,21 +212,67 @@ export const contactAPI = {
       ...replyData 
     });
   },
-  getAll: (token) => {
-    setAuthToken(token);
-    return api.get('/contact');
-  },
-  getById: (id, token) => {
-    setAuthToken(token);
-    return api.get(`/contact/${id}`);
-  },
-  update: (id, messageData, token) => {
-    setAuthToken(token);
-    return api.put(`/contact/${id}`, messageData);
-  },
   deleteMessage: (id, token) => {
     setAuthToken(token);
     return api.delete(`/contact/${id}`);
+  },
+};
+
+// Analytics API
+export const analyticsAPI = {
+  getStats: (token) => {
+    setAuthToken(token);
+    return api.get('/analytics/stats');
+  },
+  getTrafficSources: (token) => {
+    setAuthToken(token);
+    return api.get('/analytics/traffic');
+  },
+  getTopPages: (token) => {
+    setAuthToken(token);
+    return api.get('/analytics/top-pages');
+  },
+};
+
+// Backup API
+export const backupAPI = {
+  getAll: (token) => {
+    setAuthToken(token);
+    return api.get('/backups');
+  },
+  create: (type, token) => {
+    setAuthToken(token);
+    return api.post('/backups', { type });
+  },
+  download: (filename, token) => {
+    setAuthToken(token);
+    return api.get(`/backups/${filename}/download`, {
+      responseType: 'blob'
+    });
+  },
+  delete: (filename, token) => {
+    setAuthToken(token);
+    return api.delete(`/backups/${filename}`);
+  },
+  restore: (filename, token) => {
+    setAuthToken(token);
+    return api.post(`/backups/restore/${filename}`);
+  },
+};
+
+// Profile API
+export const profileAPI = {
+  getProfile: (token) => {
+    setAuthToken(token);
+    return api.get('/auth/me');
+  },
+  updateProfile: (profileData, token) => {
+    setAuthToken(token);
+    return api.put('/auth/profile', profileData);
+  },
+  changePassword: (passwordData, token) => {
+    setAuthToken(token);
+    return api.put('/auth/change-password', passwordData);
   },
 };
 

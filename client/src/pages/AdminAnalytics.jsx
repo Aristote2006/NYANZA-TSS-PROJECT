@@ -1,7 +1,7 @@
-import React from 'react';
-import { Container, Typography, Box, Grid, Card, CardContent, Button } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Container, Typography, Box, Grid, Card, CardContent, Button, CircularProgress, Alert } from '@mui/material';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
@@ -9,6 +9,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import SchoolIcon from '@mui/icons-material/School';
 import NewspaperIcon from '@mui/icons-material/Newspaper';
 import MessageIcon from '@mui/icons-material/Message';
+import { analyticsAPI } from '../services/api';
 
 const StyledCard = styled(Card)(({ theme }) => ({
   borderRadius: 16,
@@ -21,28 +22,106 @@ const StyledCard = styled(Card)(({ theme }) => ({
 }));
 
 const AdminAnalytics = () => {
-  // Mock analytics data
-  const stats = [
-    { title: 'Total Visitors', value: '24,567', icon: <PeopleIcon sx={{ fontSize: 40 }} />, color: 'primary', change: '+12.5%' },
-    { title: 'Page Views', value: '189,342', icon: <ShowChartIcon sx={{ fontSize: 40 }} />, color: 'secondary', change: '+8.2%' },
-    { title: 'Engagement Rate', value: '72.4%', icon: <BarChartIcon sx={{ fontSize: 40 }} />, color: 'primary', change: '+5.3%' },
-    { title: 'Avg. Session Duration', value: '4m 32s', icon: <ShowChartIcon sx={{ fontSize: 40 }} />, color: 'secondary', change: '+3.1%' },
-  ];
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [stats, setStats] = useState([]);
+  const [trafficSources, setTrafficSources] = useState([]);
+  const [topPages, setTopPages] = useState([]);
 
-  const trafficSources = [
-    { source: 'Direct', percentage: 45, color: '#3498db' },
-    { source: 'Social Media', percentage: 25, color: '#e74c3c' },
-    { source: 'Search Engines', percentage: 20, color: '#2ecc71' },
-    { source: 'Referrals', percentage: 10, color: '#f39c12' },
-  ];
+  useEffect(() => {
+    const fetchAnalyticsData = async () => {
+      try {
+        const token = localStorage.getItem('token') || localStorage.getItem('adminToken');
+        
+        console.log('Analytics Page - Token found:', token ? 'Yes' : 'No');
+        console.log('Token value:', token);
+        
+        if (!token) {
+          setError('No authentication token found. Please log in again.');
+          setTimeout(() => navigate('/admin-login'), 2000);
+          return;
+        }
 
-  const topPages = [
-    { page: '/', views: 12450 },
-    { page: '/programs', views: 8765 },
-    { page: '/about', views: 6543 },
-    { page: '/news', views: 5432 },
-    { page: '/contact', views: 4321 },
-  ];
+        // Fetch all analytics data
+        console.log('Fetching analytics data...');
+        const [statsRes, trafficRes, topPagesRes] = await Promise.all([
+          analyticsAPI.getStats(token),
+          analyticsAPI.getTrafficSources(token),
+          analyticsAPI.getTopPages(token)
+        ]);
+
+        console.log('Stats response:', statsRes.data);
+        console.log('Traffic response:', trafficRes.data);
+        console.log('Top pages response:', topPagesRes.data);
+
+        const statsData = statsRes.data;
+        
+        // Format stats for display
+        setStats([
+          { 
+            title: 'Total Visitors', 
+            value: statsData.visitors.total, 
+            icon: <PeopleIcon sx={{ fontSize: 40 }} />, 
+            color: 'primary', 
+            change: statsData.visitors.change 
+          },
+          { 
+            title: 'Page Views', 
+            value: statsData.pageViews.total, 
+            icon: <ShowChartIcon sx={{ fontSize: 40 }} />, 
+            color: 'secondary', 
+            change: statsData.pageViews.change 
+          },
+          { 
+            title: 'Engagement Rate', 
+            value: statsData.engagementRate.value, 
+            icon: <BarChartIcon sx={{ fontSize: 40 }} />, 
+            color: 'primary', 
+            change: statsData.engagementRate.change 
+          },
+          { 
+            title: 'Avg. Session Duration', 
+            value: statsData.avgSessionDuration.value, 
+            icon: <ShowChartIcon sx={{ fontSize: 40 }} />, 
+            color: 'secondary', 
+            change: statsData.avgSessionDuration.change 
+          },
+        ]);
+
+        setTrafficSources(trafficRes.data);
+        setTopPages(topPagesRes.data);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching analytics data:', err);
+        console.error('Error response:', err.response);
+        console.error('Error message:', err.message);
+        setError('Failed to load analytics data: ' + (err.response?.data?.msg || err.message));
+        setLoading(false);
+      }
+    };
+
+    fetchAnalyticsData();
+  }, [navigate]);
+
+  if (loading) {
+    return (
+      <Container maxWidth="lg" sx={{ py: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+        <CircularProgress size={60} />
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>
+        <Button variant="contained" component={Link} to="/admin-dashboard">
+          Back to Dashboard
+        </Button>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="lg" sx={{ py: 4, background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)' }}>

@@ -21,7 +21,7 @@ const Programs = () => {
       description: 'Hands-on experience in electronics design, manufacturing, and maintenance.',
       duration: '3 Years',
       requirements: 'Being passionate about electronics and telecommunications',
-      image: '/assets/images/mainstaff.jpg'
+      image: '/assets/images/electronics.jpeg'
     },
     {
       id: 3,
@@ -77,7 +77,7 @@ const Programs = () => {
       description: 'Interior design, furniture making, and construction techniques.',
       duration: '3 Years',
       requirements: 'Being passionate about interior design and construction',
-      image: '/assets/images/mainstaff.jpg'
+      image: '/assets/images/interior.jpeg'
     },
     {
       id: 10,
@@ -101,7 +101,7 @@ const Programs = () => {
       description: 'Solar energy, wind energy, and renewable energy systems.',
       duration: '3 Years',
       requirements: 'Being passionate about renewable energy and sustainability',
-      image: '/assets/images/mainstaff.jpg'
+      image: '/assets/images/renewable.jpeg'
     }
   ];
 

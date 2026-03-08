@@ -21,7 +21,7 @@ const ProgramsPreview = () => {
       description: 'Hands-on experience in electronics design, manufacturing, and maintenance.',
       duration: '3 Years',
       requirements: 'Being passionate about electronics and telecommunications',
-      image: '/assets/images/mainstaff.jpg'
+      image: '/assets/images/electronics.jpeg'
     },
     {
       id: 3,

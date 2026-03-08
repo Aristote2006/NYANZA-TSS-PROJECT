@@ -1,12 +1,15 @@
-import React from 'react';
-import { Container, Typography, Box, Card, CardContent, Button, LinearProgress, Alert } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Container, Typography, Box, Card, CardContent, Button, LinearProgress, Alert, CircularProgress, Snackbar, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import BackupIcon from '@mui/icons-material/Backup';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import ScheduleIcon from '@mui/icons-material/Schedule';
+import DeleteIcon from '@mui/icons-material/Delete';
+import RestoreIcon from '@mui/icons-material/Restore';
+import { backupAPI } from '../services/api';
 
 const StyledCard = styled(Card)(({ theme }) => ({
   borderRadius: 16,
@@ -19,13 +22,194 @@ const StyledCard = styled(Card)(({ theme }) => ({
 }));
 
 const AdminBackup = () => {
-  // Mock backup data
-  const backups = [
-    { id: 1, date: '2024-01-15 10:30 AM', size: '245 MB', type: 'Full Backup' },
-    { id: 2, date: '2024-01-14 10:30 AM', size: '238 MB', type: 'Full Backup' },
-    { id: 3, date: '2024-01-13 10:30 AM', size: '235 MB', type: 'Full Backup' },
-    { id: 4, date: '2024-01-12 10:30 AM', size: '232 MB', type: 'Full Backup' },
-  ];
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [backups, setBackups] = useState([]);
+  const [creatingBackup, setCreatingBackup] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [selectedBackup, setSelectedBackup] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogType, setDialogType] = useState(null); // 'delete' or 'restore'
+
+  useEffect(() => {
+    fetchBackups();
+  }, []);
+
+  const fetchBackups = async () => {
+    try {
+      const token = localStorage.getItem('token') || localStorage.getItem('adminToken');
+      
+      if (!token) {
+        setError('No authentication token found. Please log in again.');
+        setTimeout(() => navigate('/admin-login'), 2000);
+        return;
+      }
+
+      const response = await backupAPI.getAll(token);
+      setBackups(response.data);
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching backups:', err);
+      setError('Failed to load backup data. Please try again later.');
+      setLoading(false);
+    }
+  };
+
+  const handleCreateBackup = async (type = 'full') => {
+    try {
+      setCreatingBackup(true);
+      setProgress(0);
+      const token = localStorage.getItem('token') || localStorage.getItem('adminToken');
+      
+      if (!token) {
+        setError('No authentication token found.');
+        return;
+      }
+
+      // Simulate progress
+      const interval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 90) {
+            clearInterval(interval);
+            return prev;
+          }
+          return prev + 10;
+        });
+      }, 200);
+
+      const response = await backupAPI.create(type, token);
+      
+      clearInterval(interval);
+      setProgress(100);
+      
+      setTimeout(() => {
+        setCreatingBackup(false);
+        setProgress(0);
+        setSuccessMessage('Backup created successfully!');
+        fetchBackups();
+        setTimeout(() => setSuccessMessage(''), 3000);
+      }, 500);
+    } catch (err) {
+      console.error('Error creating backup:', err);
+      setCreatingBackup(false);
+      setProgress(0);
+      setError('Failed to create backup. Please try again.');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
+  const handleDownload = async (filename) => {
+    try {
+      const token = localStorage.getItem('token') || localStorage.getItem('adminToken');
+      if (!token) {
+        setError('No authentication token found.');
+        return;
+      }
+
+      const response = await backupAPI.download(filename, token);
+      
+      // Create blob and download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      
+      setSuccessMessage('Backup downloaded successfully!');
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      console.error('Error downloading backup:', err);
+      setError('Failed to download backup.');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
+  const handleDeleteClick = (backup) => {
+    setSelectedBackup(backup);
+    setDialogType('delete');
+    setDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      const token = localStorage.getItem('token') || localStorage.getItem('adminToken');
+      if (!token) {
+        setError('No authentication token found.');
+        setDialogOpen(false);
+        return;
+      }
+
+      await backupAPI.delete(selectedBackup.filename, token);
+      setSuccessMessage('Backup deleted successfully!');
+      fetchBackups();
+      setDialogOpen(false);
+      setSelectedBackup(null);
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      console.error('Error deleting backup:', err);
+      setError('Failed to delete backup.');
+      setDialogOpen(false);
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
+  const handleRestoreClick = (backup) => {
+    setSelectedBackup(backup);
+    setDialogType('restore');
+    setDialogOpen(true);
+  };
+
+  const handleRestoreConfirm = async () => {
+    try {
+      const token = localStorage.getItem('token') || localStorage.getItem('adminToken');
+      if (!token) {
+        setError('No authentication token found.');
+        setDialogOpen(false);
+        return;
+      }
+
+      await backupAPI.restore(selectedBackup.filename, token);
+      setSuccessMessage('System restored successfully!');
+      fetchBackups();
+      setDialogOpen(false);
+      setSelectedBackup(null);
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      console.error('Error restoring backup:', err);
+      setError('Failed to restore backup.');
+      setDialogOpen(false);
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setSelectedBackup(null);
+    setDialogType(null);
+  };
+
+  if (loading) {
+    return (
+      <Container maxWidth="lg" sx={{ py: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+        <CircularProgress size={60} />
+      </Container>
+    );
+  }
+
+  if (error && backups.length === 0) {
+    return (
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>
+        <Button variant="contained" component={Link} to="/admin-dashboard">
+          Back to Dashboard
+        </Button>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="lg" sx={{ py: 4, background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)' }}>
@@ -78,9 +262,11 @@ const AdminBackup = () => {
         </Box>
 
         <Box sx={{ mb: 4 }}>
-          <Alert severity="info" sx={{ mb: 2 }}>
-            Last backup: January 15, 2024 at 10:30 AM (245 MB)
-          </Alert>
+          {backups.length > 0 && (
+            <Alert severity="info" sx={{ mb: 2 }}>
+              Last backup: {new Date(backups[0].createdAt).toLocaleString()} ({backups[0].size})
+            </Alert>
+          )}
           
           <StyledCard sx={{ 
             borderRadius: 3, 
@@ -96,15 +282,19 @@ const AdminBackup = () => {
                 Create New Backup
               </Typography>
               
-              <Box sx={{ mb: 3 }}>
-                <LinearProgress variant="determinate" value={65} sx={{ mb: 1 }} />
-                <Typography variant="body2" color="text.secondary">Creating backup... 65%</Typography>
-              </Box>
+              {creatingBackup && (
+                <Box sx={{ mb: 3 }}>
+                  <LinearProgress variant="determinate" value={progress} sx={{ mb: 1 }} />
+                  <Typography variant="body2" color="text.secondary">Creating backup... {progress}%</Typography>
+                </Box>
+              )}
               
               <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                 <Button
                   variant="contained"
                   startIcon={<CloudUploadIcon />}
+                  onClick={() => handleCreateBackup('full')}
+                  disabled={creatingBackup}
                   sx={{
                     background: 'linear-gradient(45deg, #f39c12, #d35400)',
                     '&:hover': {
@@ -130,7 +320,7 @@ const AdminBackup = () => {
                 </Button>
                 <Button
                   variant="outlined"
-                  startIcon={<CloudDownloadIcon />}
+                  startIcon={<RestoreIcon />}
                   sx={{
                     borderColor: 'secondary.main',
                     color: 'secondary.main',
@@ -140,7 +330,7 @@ const AdminBackup = () => {
                     }
                   }}
                 >
-                  Restore from Backup
+                  Restore System
                 </Button>
               </Box>
             </CardContent>
@@ -160,79 +350,144 @@ const AdminBackup = () => {
               Previous Backups
             </Typography>
             
-            <Box>
-              {backups.map((backup, index) => (
-                <Box 
-                  key={backup.id} 
-                  sx={{ 
-                    display: 'flex', 
-                    justifyContent: 'space-between', 
-                    alignItems: 'center', 
-                    p: 2, 
-                    mb: 2, 
-                    borderRadius: 2, 
-                    bgcolor: 'background.paper',
-                    border: '1px solid',
-                    borderColor: 'divider'
-                  }}
-                >
-                  <Box>
-                    <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                      {backup.type} - {backup.date}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Size: {backup.size}
-                    </Typography>
+            {backups.length === 0 ? (
+              <Alert severity="info">No backups found. Create your first backup to get started.</Alert>
+            ) : (
+              <Box>
+                {backups.map((backup) => (
+                  <Box 
+                    key={backup.id} 
+                    sx={{ 
+                      display: 'flex', 
+                      justifyContent: 'space-between', 
+                      alignItems: 'center', 
+                      p: 2, 
+                      mb: 2, 
+                      borderRadius: 2, 
+                      bgcolor: 'background.paper',
+                      border: '1px solid',
+                      borderColor: 'divider'
+                    }}
+                  >
+                    <Box>
+                      <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                        {backup.type} - {backup.date}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Size: {backup.size} • File: {backup.filename}
+                      </Typography>
+                    </Box>
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        startIcon={<CloudDownloadIcon />}
+                        onClick={() => handleDownload(backup.filename)}
+                        sx={{
+                          borderColor: 'secondary.main',
+                          color: 'secondary.main',
+                          '&:hover': {
+                            backgroundColor: 'secondary.light',
+                            borderColor: 'secondary.dark',
+                          }
+                        }}
+                      >
+                        Download
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        startIcon={<RestoreIcon />}
+                        onClick={() => handleRestoreClick(backup)}
+                        sx={{
+                          borderColor: 'primary.main',
+                          color: 'primary.main',
+                          '&:hover': {
+                            backgroundColor: 'primary.light',
+                            borderColor: 'primary.dark',
+                          }
+                        }}
+                      >
+                        Restore
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        startIcon={<DeleteIcon />}
+                        onClick={() => handleDeleteClick(backup)}
+                        color="error"
+                        sx={{
+                          '&:hover': {
+                            backgroundColor: 'error.light',
+                          }
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </Box>
                   </Box>
-                  <Box sx={{ display: 'flex', gap: 1 }}>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      sx={{
-                        borderColor: 'secondary.main',
-                        color: 'secondary.main',
-                        '&:hover': {
-                          backgroundColor: 'secondary.light',
-                          borderColor: 'secondary.dark',
-                        }
-                      }}
-                    >
-                      Download
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      color="error"
-                      sx={{
-                        '&:hover': {
-                          backgroundColor: 'error.light',
-                        }
-                      }}
-                    >
-                      Delete
-                    </Button>
-                  </Box>
-                </Box>
-              ))}
-            </Box>
+                ))}
+              </Box>
+            )}
           </CardContent>
         </StyledCard>
         
-        <Box sx={{ textAlign: 'center', mt: 4 }}>
-          <Button
-            variant="contained"
-            component={Link}
-            to="/admin-dashboard"
-            sx={{
-              background: 'linear-gradient(45deg, #2c3e50, #34495e)',
-              '&:hover': {
-                background: 'linear-gradient(45deg, #1a252f, #2c3e50)',
-              }
-            }}
-          >
-            Back to Dashboard
-          </Button>
-        </Box>
+        {/* Dialog for delete confirmation */}
+        <Dialog open={dialogOpen && dialogType === 'delete'} onClose={handleCloseDialog}>
+          <DialogTitle>Confirm Delete</DialogTitle>
+          <DialogContent>
+            Are you sure you want to delete this backup? This action cannot be undone.
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={handleDeleteConfirm} color="error" variant="contained">
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+        
+        {/* Dialog for restore confirmation */}
+        <Dialog open={dialogOpen && dialogType === 'restore'} onClose={handleCloseDialog}>
+          <DialogTitle>Confirm Restore</DialogTitle>
+          <DialogContent>
+            <Alert severity="warning" sx={{ mb: 2 }}>
+              Warning: Restoring from a backup will replace all current data with the backed up data.
+            </Alert>
+            Are you sure you want to restore from this backup?
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={handleRestoreConfirm} color="warning" variant="contained">
+              Restore
+            </Button>
+          </DialogActions>
+        </Dialog>
+        
+        <Snackbar 
+          open={!!successMessage} 
+          autoHideDuration={3000} 
+          onClose={() => setSuccessMessage('')}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        >
+          <Alert severity="success" sx={{ width: '100%' }}>
+            {successMessage}
+          </Alert>
+        </Snackbar>
+        
+        <Snackbar 
+          open={!!error && (!adminUser || backups.length > 0)} 
+          autoHideDuration={3000} 
+          onClose={() => setError('')}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        >
+          <Alert severity="error" sx={{ width: '100%' }}>
+            {error}
+          </Alert>
+        </Snackbar>
       </motion.div>
     </Container>
   );

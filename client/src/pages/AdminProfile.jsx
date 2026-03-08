@@ -1,7 +1,7 @@
-import React from 'react';
-import { Container, Typography, Box, Card, CardContent, Button, TextField, Avatar, Grid } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Container, Typography, Box, Card, CardContent, Button, TextField, Avatar, Grid, CircularProgress, Alert, Snackbar } from '@mui/material';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import EmailIcon from '@mui/icons-material/Email';
@@ -9,6 +9,7 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
+import { profileAPI } from '../services/api';
 
 const StyledCard = styled(Card)(({ theme }) => ({
   borderRadius: 16,
@@ -21,16 +22,101 @@ const StyledCard = styled(Card)(({ theme }) => ({
 }));
 
 const AdminProfile = () => {
-  // Mock admin user data
-  const adminUser = {
-    name: 'Admin User',
-    email: 'admin@nyanzatss.edu.ke',
-    phone: '+254 712 345 678',
-    position: 'System Administrator',
-    department: 'IT Department',
-    joinDate: 'January 1, 2024',
-    avatar: null // In a real app, this would be an image URL
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [adminUser, setAdminUser] = useState(null);
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    phone: '',
+    position: '',
+    department: ''
+  });
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('token') || localStorage.getItem('adminToken');
+        
+        if (!token) {
+          setError('No authentication token found. Please log in again.');
+          setTimeout(() => navigate('/admin-login'), 2000);
+          return;
+        }
+
+        const response = await profileAPI.getProfile(token);
+        const profileData = response.data;
+        
+        setAdminUser(profileData);
+        setFormData({
+          username: profileData.username || '',
+          email: profileData.email || '',
+          phone: profileData.phone || '',
+          position: profileData.position || 'System Administrator',
+          department: profileData.department || 'IT Department'
+        });
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching profile data:', err);
+        setError('Failed to load profile data. Please try again later.');
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [navigate]);
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem('token') || localStorage.getItem('adminToken');
+      if (!token) {
+        setError('No authentication token found.');
+        return;
+      }
+
+      await profileAPI.updateProfile(formData, token);
+      setSuccessMessage('Profile updated successfully!');
+      
+      // Refresh profile data
+      const response = await profileAPI.getProfile(token);
+      setAdminUser(response.data);
+      
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      setError('Failed to update profile. Please try again.');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Container maxWidth="lg" sx={{ py: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+        <CircularProgress size={60} />
+      </Container>
+    );
+  }
+
+  if (error && !adminUser) {
+    return (
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>
+        <Button variant="contained" component={Link} to="/admin-dashboard">
+          Back to Dashboard
+        </Button>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="lg" sx={{ py: 4, background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)' }}>
@@ -108,16 +194,16 @@ const AdminProfile = () => {
                     mb: 2
                   }}
                 >
-                  {adminUser.name.charAt(0)}
+                  {adminUser.username ? adminUser.username.charAt(0).toUpperCase() : 'A'}
                 </Avatar>
                 <Typography variant="h5" sx={{ fontWeight: 700, color: 'primary.main', mb: 1 }}>
-                  {adminUser.name}
+                  {adminUser.username}
                 </Typography>
                 <Typography variant="h6" color="text.secondary" sx={{ mb: 1 }}>
-                  {adminUser.position}
+                  {adminUser.position || 'System Administrator'}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {adminUser.department}
+                  {adminUser.department || 'IT Department'}
                 </Typography>
                 
                 <Button
@@ -161,7 +247,9 @@ const AdminProfile = () => {
                       <TextField
                         fullWidth
                         label="Full Name"
-                        defaultValue={adminUser.name}
+                        name="username"
+                        value={formData.username}
+                        onChange={handleChange}
                         variant="outlined"
                         InputProps={{
                           startAdornment: (
@@ -174,7 +262,10 @@ const AdminProfile = () => {
                       <TextField
                         fullWidth
                         label="Email Address"
-                        defaultValue={adminUser.email}
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleChange}
                         variant="outlined"
                         InputProps={{
                           startAdornment: (
@@ -187,7 +278,9 @@ const AdminProfile = () => {
                       <TextField
                         fullWidth
                         label="Phone Number"
-                        defaultValue={adminUser.phone}
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
                         variant="outlined"
                         InputProps={{
                           startAdornment: (
@@ -200,7 +293,9 @@ const AdminProfile = () => {
                       <TextField
                         fullWidth
                         label="Position"
-                        defaultValue={adminUser.position}
+                        name="position"
+                        value={formData.position}
+                        onChange={handleChange}
                         variant="outlined"
                         InputProps={{
                           startAdornment: (
@@ -213,7 +308,9 @@ const AdminProfile = () => {
                       <TextField
                         fullWidth
                         label="Department"
-                        defaultValue={adminUser.department}
+                        name="department"
+                        value={formData.department}
+                        onChange={handleChange}
                         variant="outlined"
                         InputProps={{
                           startAdornment: (
@@ -226,7 +323,7 @@ const AdminProfile = () => {
                       <TextField
                         fullWidth
                         label="Join Date"
-                        defaultValue={adminUser.joinDate}
+                        defaultValue={new Date(adminUser.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
                         variant="outlined"
                         disabled
                         InputProps={{
@@ -257,6 +354,7 @@ const AdminProfile = () => {
                     <Button
                       variant="contained"
                       startIcon={<SaveIcon />}
+                      onClick={handleSubmit}
                       sx={{
                         background: 'linear-gradient(45deg, #27ae60, #2ecc71)',
                         '&:hover': {
@@ -272,6 +370,28 @@ const AdminProfile = () => {
             </motion.div>
           </Grid>
         </Grid>
+        
+        <Snackbar 
+          open={!!successMessage} 
+          autoHideDuration={3000} 
+          onClose={() => setSuccessMessage('')}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        >
+          <Alert severity="success" sx={{ width: '100%' }}>
+            {successMessage}
+          </Alert>
+        </Snackbar>
+        
+        <Snackbar 
+          open={!!error && adminUser} 
+          autoHideDuration={3000} 
+          onClose={() => setError('')}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        >
+          <Alert severity="error" sx={{ width: '100%' }}>
+            {error}
+          </Alert>
+        </Snackbar>
       </motion.div>
     </Container>
   );

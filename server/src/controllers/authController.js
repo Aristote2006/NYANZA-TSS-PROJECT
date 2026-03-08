@@ -113,8 +113,73 @@ const getAdmin = async (req, res) => {
   }
 };
 
+// @desc    Update admin profile
+// @route   PUT /api/auth/profile
+// @access  Private
+const updateProfile = async (req, res) => {
+  try {
+    const { username, email, phone, position, department } = req.body;
+    
+    // Find admin by ID
+    let admin = await Admin.findById(req.admin.id);
+    
+    if (!admin) {
+      return res.status(404).json({ msg: 'Admin not found' });
+    }
+
+    // Update fields if provided
+    if (username) admin.username = username;
+    if (email) admin.email = email;
+    if (phone) admin.phone = phone;
+    if (position) admin.position = position;
+    if (department) admin.department = department;
+
+    await admin.save();
+
+    // Return updated admin without password
+    const updatedAdmin = await Admin.findById(admin.id).select('-password');
+    res.json(updatedAdmin);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+};
+
+// @desc    Change admin password
+// @route   PUT /api/auth/change-password
+// @access  Private
+const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    
+    // Find admin by ID
+    const admin = await Admin.findById(req.admin.id);
+    
+    if (!admin) {
+      return res.status(404).json({ msg: 'Admin not found' });
+    }
+
+    // Check current password
+    const isMatch = await admin.matchPassword(currentPassword);
+    if (!isMatch) {
+      return res.status(400).json({ msg: 'Current password is incorrect' });
+    }
+
+    // Update password
+    admin.password = newPassword;
+    await admin.save();
+
+    res.json({ msg: 'Password changed successfully' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+};
+
 module.exports = {
   registerAdmin,
   loginAdmin,
   getAdmin,
+  updateProfile,
+  changePassword
 };

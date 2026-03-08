@@ -9,6 +9,9 @@ import Contact from '../pages/Contact';
 import CoCurricular from '../pages/CoCurricular';
 import AdminLogin from '../pages/AdminLogin';
 import AdminDashboard from '../pages/AdminDashboard';
+import AdminAnalytics from '../pages/AdminAnalytics';
+import AdminProfile from '../pages/AdminProfile';
+import AdminBackup from '../pages/AdminBackup';
 
 const AppRoutes = () => {
   return (
@@ -22,6 +25,9 @@ const AppRoutes = () => {
       <Route path="/contact" element={<Contact />} />
       <Route path="/admin-login" element={<AdminLogin />} />
       <Route path="/admin-dashboard" element={<AdminDashboard />} />
+      <Route path="/admin-analytics" element={<AdminAnalytics />} />
+      <Route path="/admin-profile" element={<AdminProfile />} />
+      <Route path="/admin-backup" element={<AdminBackup />} />
     </Routes>
   );
 };
