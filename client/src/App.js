@@ -26,6 +26,9 @@ import EditNews from './pages/EditNews';
 import EditLeader from './pages/EditLeader';
 import EditProgram from './pages/EditProgram';
 import TestPage from './pages/TestPage';
+import AdminAnalytics from './pages/AdminAnalytics';
+import AdminProfile from './pages/AdminProfile';
+import AdminBackup from './pages/AdminBackup';
 
 // Test environment variables
 import './testEnv';
@@ -51,14 +54,14 @@ function App() {
             <Route path="/admin-leaders/edit/:id" element={<EditLeader />} />
             <Route path="/admin-messages" element={<div>Messages Management Page</div>} />
             <Route path="/admin-messages/responded" element={<div>Responded Messages Page</div>} />
-            <Route path="/admin-profile" element={<div>Profile Page</div>} />
-            <Route path="/admin-analytics" element={<div>Analytics Page</div>} />
-            <Route path="/admin-backup" element={<div>Backup Page</div>} />
+            <Route path="/admin-profile" element={<AdminProfile />} />
+            <Route path="/admin-analytics" element={<AdminAnalytics />} />
+            <Route path="/admin-backup" element={<AdminBackup />} />
           </Route>
           <Route path="/test" element={<TestPage />} />
           
           {/* Public Routes - With Navbar/Footer */}
-          <Route path="*" element={
+          <Route path="/*" element={
             <div style={{ paddingTop: '60px' }}>
               <Navbar />
               <Routes>
