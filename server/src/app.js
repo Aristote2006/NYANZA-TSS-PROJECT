@@ -19,7 +19,7 @@ if (process.env.NODE_ENV === 'production') {
 const allowedOrigins = [
   'http://localhost:3000', 
   'http://localhost:3001',
-  'https://nyanzatss.onrender.com',
+  'https://www.nyanzatss.ac.rw/',
   process.env.CLIENT_URL,
   process.env.FRONTEND_URL
 ].filter(Boolean); // Remove undefined values
