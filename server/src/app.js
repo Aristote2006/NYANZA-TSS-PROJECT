@@ -19,19 +19,30 @@ if (process.env.NODE_ENV === 'production') {
 const allowedOrigins = [
   'http://localhost:3000', 
   'http://localhost:3001',
-  'https://www.nyanzatss.ac.rw/',
+  'https://nyanzatss.ac.rw',
+  'https://www.nyanzatss.ac.rw',
   process.env.CLIENT_URL,
   process.env.FRONTEND_URL
 ].filter(Boolean); // Remove undefined values
 
+console.log('=== CORS Configuration ===');
+console.log('Allowed Origins:', allowedOrigins);
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('CLIENT_URL:', process.env.CLIENT_URL);
+console.log('FRONTEND_URL:', process.env.FRONTEND_URL);
+console.log('========================');
+
 // Enhanced CORS configuration
 const corsOptions = {
   origin: function(origin, callback) {
+    console.log('CORS Origin Check:', origin);
+    
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
     // Allow requests from allowed origins
     if (allowedOrigins.includes(origin)) {
+      console.log('CORS Origin Allowed:', origin);
       return callback(null, true);
     }
     
@@ -39,6 +50,7 @@ const corsOptions = {
     if (process.env.NODE_ENV === 'production') {
       // Check if the origin ends with .onrender.com (for Render deployments)
       if (origin && (origin.includes('.onrender.com') || origin.includes('localhost'))) {
+        console.log('CORS Origin Allowed (Render):', origin);
         return callback(null, true);
       }
     }
@@ -52,13 +64,14 @@ const corsOptions = {
   },
   credentials: true,
   optionsSuccessStatus: 200,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization', 'x-auth-token']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization', 'x-auth-token', 'Access-Control-Request-Headers', 'Access-Control-Request-Method']
 };
 
+// Apply CORS middleware BEFORE all routes
 app.use(cors(corsOptions));
 
-// Handle preflight requests explicitly
+// Handle preflight requests explicitly for ALL routes
 app.options('*', cors(corsOptions));
 
 // Serve static files from uploads directory
@@ -67,7 +80,7 @@ app.use('/uploads', express.static('uploads'));
 // Init Middleware
 app.use(express.json({ extended: false }));
 
-// Define Routes
+// Define Routes - AFTER CORS middleware
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/news', require('./routes/newsRoutes'));
 app.use('/api/leaders', require('./routes/leadersRoutes'));
